@@ -2,7 +2,7 @@
 
 ## 1. Overall Progress
 
-- 90%
+- 100% (for data/API foundation scope)
 
 ## 2. Completed Tasks
 
@@ -12,10 +12,11 @@
 - [x] Implement internal API routes
 - [x] Implement API client and React Query hooks
 - [x] Document current implementation status
+- [x] Pass `npm run lint`, `npm run build`, `npm test`
 
 ## 3. In-Progress Tasks
 
-- [ ] Full repository verification (`npm run lint`, `npm run build`, `npm run test`)
+- [ ] None in current API foundation scope
 
 ## 4. Remaining Tasks
 
