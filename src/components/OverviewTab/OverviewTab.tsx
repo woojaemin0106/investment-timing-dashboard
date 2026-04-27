@@ -43,7 +43,7 @@ export default function OverviewTab() {
     <section className={styles.wrapper}>
       <div className={styles.header}>
         <div>
-          <h1>전체 종목</h1>
+          <h1>Timing Analysis Dashboard</h1>
           <p>{filtered.length}개의 종목이 검색되었습니다</p>
         </div>
         <label className={styles.searchBox}>
