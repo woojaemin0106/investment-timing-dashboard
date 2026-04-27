@@ -12,7 +12,10 @@ export interface MarketQueryParams {
 }
 
 interface ApiErrorPayload {
-  error?: string;
+  error?: {
+    message?: string;
+    code?: string;
+  };
 }
 
 async function requestMarketApi<T>(path: string, params: MarketQueryParams = {}): Promise<T> {
@@ -26,7 +29,7 @@ async function requestMarketApi<T>(path: string, params: MarketQueryParams = {})
 
   if (!response.ok) {
     const payload = (await response.json().catch(() => ({}))) as ApiErrorPayload;
-    throw new Error(payload.error ?? "Failed to fetch market API.");
+    throw new Error(payload.error?.message ?? "Failed to fetch market API.");
   }
 
   return (await response.json()) as T;

@@ -16,6 +16,7 @@ const rangeSet = new Set<string>(SUPPORTED_RANGES);
 
 interface MarketQueryError {
   field: "symbol" | "range" | "query";
+  code: "INVALID_QUERY" | "UNSUPPORTED_SYMBOL" | "UNSUPPORTED_RANGE";
   message: string;
   supported?: readonly string[];
 }
@@ -44,6 +45,7 @@ export function parseMarketQuery(searchParams: URLSearchParams): QueryParseResul
       success: false,
       error: {
         field: "query",
+        code: "INVALID_QUERY",
         message: "Invalid query format.",
       },
     };
@@ -57,6 +59,7 @@ export function parseMarketQuery(searchParams: URLSearchParams): QueryParseResul
       success: false,
       error: {
         field: "symbol",
+        code: "UNSUPPORTED_SYMBOL",
         message: `Unsupported symbol: ${symbolCandidate}`,
         supported: SUPPORTED_SYMBOLS,
       },
@@ -68,6 +71,7 @@ export function parseMarketQuery(searchParams: URLSearchParams): QueryParseResul
       success: false,
       error: {
         field: "range",
+        code: "UNSUPPORTED_RANGE",
         message: `Unsupported range: ${rangeCandidate}`,
         supported: SUPPORTED_RANGES,
       },

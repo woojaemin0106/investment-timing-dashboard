@@ -10,9 +10,12 @@ export async function GET(request: Request) {
   if (!queryResult.success) {
     return NextResponse.json(
       {
-        error: queryResult.error.message,
-        field: queryResult.error.field,
-        supported: queryResult.error.supported,
+        error: {
+          message: queryResult.error.message,
+          code: queryResult.error.code,
+          field: queryResult.error.field,
+          supported: queryResult.error.supported,
+        },
       },
       { status: 400 },
     );
@@ -25,7 +28,10 @@ export async function GET(request: Request) {
   } catch {
     return NextResponse.json(
       {
-        error: "Failed to load market timing data.",
+        error: {
+          message: "Failed to load market timing data.",
+          code: "MARKET_TIMING_LOAD_FAILED",
+        },
       },
       { status: 500 },
     );

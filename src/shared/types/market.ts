@@ -2,6 +2,8 @@ export type MarketSymbol = "AAPL" | "TSLA" | "NVDA" | "SPY";
 
 export type MarketRange = "1m" | "3m" | "6m" | "1y";
 
+export type InvestmentSignal = "cold" | "neutral" | "hot";
+
 export interface PricePoint {
   date: string;
   open: number;
@@ -14,14 +16,14 @@ export interface PricePoint {
 }
 
 export interface MarketSummary {
-  symbol: string;
+  symbol: MarketSymbol;
   currentPrice: number;
   previousClose?: number;
   changeRate: number;
   percentile: number;
   rsi: number;
   volatility: number;
-  signal: "cold" | "neutral" | "hot";
+  signal: InvestmentSignal;
   summary: string;
 }
 
