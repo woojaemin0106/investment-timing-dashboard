@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Sidebar from "@/components/Sidebar/Sidebar";
 import "./globals.scss";
 
 const geistSans = Geist({
@@ -13,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Investment Timing Dashboard",
-  description: "Hackathon bootstrap for the timing analysis dashboard",
+  title: "InvestPulse",
+  description: "투자 타이밍 분석 대시보드",
 };
 
 export default function RootLayout({
@@ -23,8 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+    <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
+        <div className="app-layout">
+          <Sidebar />
+          <main className="app-main">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }
