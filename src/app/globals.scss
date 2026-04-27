@@ -13,8 +13,8 @@ body {
 }
 
 body {
-  color: v.$gray-900;
-  background: #f5f6f8;
+  color: v.$text-primary;
+  background: v.$bg-primary;
   font-family: var(--font-geist-sans), "Noto Sans KR", sans-serif;
 }
 
@@ -30,9 +30,10 @@ a {
 
 .app-main {
   flex: 1;
-  padding: 24px 20px;
-  background: #f5f6f8;
+  padding: 24px 28px;
+  background: v.$bg-primary;
   max-width: calc(100vw - 16rem);
+  overflow-x: hidden;
 }
 
 @media (max-width: 1200px) {

@@ -3,12 +3,12 @@
 
 .sidebar {
   width: v.$sidebar-width;
-  border-right: 1px solid v.$gray-200;
-  background: #fcfcfc;
+  border-right: 1px solid v.$border-dark;
+  background: v.$bg-secondary;
   padding: 16px 14px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .logo {
@@ -19,7 +19,7 @@
   align-items: center;
   gap: 8px;
   justify-content: flex-start;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .logoIcon {
@@ -37,100 +37,253 @@
   flex-direction: column;
   font-size: 20px;
   line-height: 1.1;
-  color: v.$gray-900;
+  color: v.$text-primary;
   font-weight: 700;
+  text-align: left;
 
   small {
     margin-top: 3px;
     font-size: 11px;
-    color: v.$gray-500;
+    color: v.$text-secondary;
     font-weight: 500;
   }
+}
+
+/* ── Market Status Button ── */
+.marketStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.05);
+  border-radius: 8px;
+  color: v.$emerald-400;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  background: v.$emerald-400;
+  border-radius: 50%;
+  box-shadow: 0 0 6px v.$emerald-400;
+}
+
+.statusDotSep {
+  color: v.$text-muted;
+  margin: 0 2px;
+}
+
+.statusTime {
+  color: v.$emerald-500;
+}
+
+/* ── Scroll Area ── */
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+/* ── Sections ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: v.$text-muted;
+  padding: 0 10px;
 }
 
 .menu {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .menuItem {
   @include m.smooth;
-  border-radius: 10px;
-  padding: 10px;
-  color: v.$gray-500;
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: v.$text-secondary;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  text-decoration: none;
+  border-left: 2px solid transparent;
 
   &:hover {
-    background: v.$gray-100;
+    color: v.$text-primary;
   }
 }
 
 .active {
-  background: v.$emerald-50;
-  color: v.$emerald-500;
-}
-
-.signalSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid v.$gray-200;
-  padding-top: 16px;
-}
-
-.sectionTitle {
-  font-size: 14px;
-  font-weight: 700;
-  color: v.$gray-900;
-}
-
-.signalButton {
-  @include m.button-reset;
-  @include m.smooth;
-  border-radius: 8px;
-  background: transparent;
-  padding: 8px 10px;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: v.$gray-900;
-
+  background: rgba(16, 185, 129, 0.08); /* slight green tint */
+  color: v.$emerald-400;
+  border-left: 2px solid v.$emerald-500; /* green left border line */
+  
   &:hover {
-    background: v.$gray-100;
+    color: v.$emerald-400;
   }
 }
 
+.menuIconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  color: #a0aec0;
+}
+
+.active .menuIconBox {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: v.$text-primary;
+}
+
+.marketIcon {
+  color: v.$text-muted;
+}
+
+.badge {
+  margin-left: auto;
+  background: v.$red-accent;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 99px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid v.$border-dark;
+  opacity: 0.5;
+  margin: 0;
+}
+
+/* ── Popular List ── */
+.popularList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.popularItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  @include m.smooth;
+
+  &:hover {
+    background: rgba(255,255,255,0.02);
+  }
+}
+
+.popularLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.colorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-top: 5px;
+}
+
+.popularInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.popularName {
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.popularCode {
+  font-size: 11px;
+  color: v.$text-muted;
+}
+
+.popularRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.popularPrice {
+  font-size: 13px;
+  font-weight: 500;
+  color: v.$text-secondary;
+}
+
+.popularChange {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.up {
+  color: v.$green-accent;
+}
+
+.down {
+  color: v.$red-accent;
+}
+
+/* ── Bottom Analysis Bar ── */
 .analysisCard {
   margin-top: auto;
-  background: #ddf6ec;
-  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  border-radius: 10px;
   padding: 10px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 
   p {
     font-size: 13px;
-    font-weight: 700;
-    color: #0f5132;
+    font-weight: 500;
+    color: v.$emerald-400;
+    margin-bottom: 2px;
   }
 
   small {
     font-size: 11px;
-    color: #4b5563;
+    color: v.$text-secondary;
   }
 }
 
 .analysisIcon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
-  background: v.$emerald-500;
-  color: #fff;
+  color: v.$text-primary;
   display: grid;
   place-items: center;
 }
