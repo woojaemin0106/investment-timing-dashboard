@@ -1,51 +1,95 @@
 # Investment Timing Dashboard Progress
 
-## 1. Overall Progress
+## Overall Progress
 
-- 100% (for data/API foundation scope)
+- 100%
 
-## 2. Completed Tasks
+Progress basis:
 
-- [x] Define shared market data types
-- [x] Add mock market time-series data for AAPL/TSLA/NVDA/SPY
-- [x] Implement analysis utilities (MA, percentile, RSI, volatility, signal, anomalies)
-- [x] Implement internal API routes
-- [x] Implement API client and React Query hooks
-- [x] Document current implementation status
-- [x] Pass `npm run lint`, `npm run build`, `npm test`
+- Type definitions: 10 / 10
+- Mock data: 15 / 15
+- Analysis logic: 20 / 20
+- API Route: 20 / 20
+- API client/hook: 15 / 15
+- Documentation: 10 / 10
+- lint/build/test: 10 / 10
 
-## 3. In-Progress Tasks
+## Completed
 
-- [ ] None in current API foundation scope
+- [x] Defined shared market data contracts for prices, ranges, symbols, summaries, signals, history responses, timing responses, and anomaly points.
+- [x] Added deterministic mock market price data for AAPL, TSLA, NVDA, and SPY.
+- [x] Added range support for `1m`, `3m`, `6m`, and `1y`.
+- [x] Implemented moving averages, percentile, RSI, volatility, change-rate, signal, summary, and anomaly utilities.
+- [x] Implemented internal App Router API routes for market history and timing.
+- [x] Prepared server-side Twelve Data adapter with `TWELVE_DATA_API_KEY` fallback to mock data.
+- [x] Added typed market API client functions and React Query hooks.
+- [x] Added Playwright API contract smoke tests.
+- [x] Verified `npm run lint`, `npm run build`, and `npm run test`.
 
-## 4. Remaining Tasks
+## In Progress
 
-- [ ] Integrate API hooks into Overview screen widgets
-- [ ] Build Detailed analysis chart UI with range/symbol controls
-- [ ] Build anomaly list and interaction panel
-- [ ] Add test coverage for analysis utilities and API routes
-- [ ] Connect Twelve Data live API mode in production environment
+- [ ] None for the current data/API foundation scope.
 
-## 5. Next Handover Checklist
+## Remaining Tasks
 
-- Overview assignee should call:
-  - `GET /api/market/timing?symbol=AAPL&range=1y`
-  - Use `summary` for top cards and signal badge
-  - Use `prices` for overview line/candle chart
-- Detailed assignee should use:
-  - `prices` from `/api/market/history` or `/api/market/timing`
-  - `ma20`, `ma60`, `volume`, and date-based range filters
-- Anomaly assignee should use:
-  - `anomalies` from `/api/market/timing`
-  - `type`, `value`, `description`, and `date` for timeline and highlights
+- [ ] Integrate market API hooks into Overview widgets where the UI owner wants live timing data.
+- [ ] Build detailed analysis controls for symbol/range selection.
+- [ ] Build anomaly list and interaction panel.
+- [ ] Expand analysis/API test coverage if the formulas become product-critical.
+- [ ] Validate Twelve Data live mode in a production-like environment.
 
-## 6. API Usage Examples
+## API Usage
 
-- `/api/market/history?symbol=AAPL&range=1y`
-- `/api/market/timing?symbol=AAPL&range=1y`
+```http
+GET /api/market/history?symbol=AAPL&range=1y
+GET /api/market/timing?symbol=AAPL&range=1y
+```
 
-## 7. Current Limitations
+Defaults:
 
-- Current responses run on mock-first behavior and fallback.
-- Twelve Data live integration is prepared but not fully validated in production.
-- AI one-line diagnosis is currently replaced with rule-based summary text.
+- `symbol`: `AAPL`
+- `range`: `1y`
+
+Supported values:
+
+- `symbol`: `AAPL`, `TSLA`, `NVDA`, `SPY`
+- `range`: `1m`, `3m`, `6m`, `1y`
+
+Error shape:
+
+```json
+{
+  "error": {
+    "message": "Unsupported symbol: INVALID",
+    "code": "UNSUPPORTED_SYMBOL",
+    "field": "symbol",
+    "supported": ["AAPL", "TSLA", "NVDA", "SPY"]
+  }
+}
+```
+
+## For Overview Developer
+
+- Use `GET /api/market/timing?symbol=AAPL&range=1y` when a widget needs timing analysis.
+- Use `summary.currentPrice`, `summary.changeRate`, `summary.percentile`, `summary.rsi`, `summary.volatility`, `summary.signal`, and `summary.summary` for cards or badges.
+- Use `prices` for chart series. Each point includes `date`, OHLC, `volume`, and optional `ma20` / `ma60`.
+- Existing Overview UI can stay mock-backed until the UI owner chooses where to connect these values.
+
+## For Detailed Developer
+
+- Use `GET /api/market/history?symbol=TSLA&range=6m` for chart-only data.
+- Use `GET /api/market/timing?symbol=TSLA&range=6m` when the page also needs summary/anomaly data.
+- `prices` are sorted by ascending date and are safe for Recharts line, area, or composed charts.
+
+## For Anomaly Developer
+
+- Use `anomalies` from `/api/market/timing`.
+- Each anomaly includes `date`, `type`, `value`, and `description`.
+- Supported anomaly types are `surge`, `drop`, and `volatility`.
+
+## Current Limitations
+
+- Current MVP remains mock-first and falls back to mock data when `TWELVE_DATA_API_KEY` is empty or the external API fails.
+- Twelve Data live mode is structurally prepared but not production-validated yet.
+- The one-line diagnosis is rule-based; no AI-generated diagnosis is used yet.
+- Local `next build` may need network access because the current layout uses `next/font/google`.
