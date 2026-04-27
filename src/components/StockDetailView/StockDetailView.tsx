@@ -43,6 +43,18 @@ interface HistoricalPoint {
   ma20: number;
 }
 
+const CHART_GRID_COLOR = "#1e3048";
+const CHART_AXIS_TICK = { fill: "#4d6278", fontSize: 11 };
+const CHART_TOOLTIP_STYLE = {
+  contentStyle: {
+    background: "#1a2744",
+    border: "1px solid #2a3a5a",
+    borderRadius: 8,
+    color: "#e4eaf2",
+    fontSize: 12,
+  },
+};
+
 const generateHistoricalData = (currentPrice: number, timeFrame: TimeFrame): HistoricalPoint[] => {
   const dataPoints: Record<TimeFrame, number> = {
     분: 60,
@@ -254,11 +266,11 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_COLOR} vertical={false} />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <Tooltip {...CHART_TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{ color: "#7b8fa6", fontSize: 12 }} />
                 <Area dataKey="price" stroke="#10b981" fill="url(#colorPrice)" name="현재가" />
                 <Line dataKey="ma5" stroke="#3b82f6" name="5일 이동평균" dot={false} />
                 <Line dataKey="ma20" stroke="#f59e0b" name="20일 이동평균" dot={false} />
@@ -267,11 +279,11 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
 
             {chartType === "라인" && (
               <LineChart data={historicalData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_COLOR} vertical={false} />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <Tooltip {...CHART_TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{ color: "#7b8fa6", fontSize: 12 }} />
                 <Line dataKey="price" stroke="#10b981" strokeWidth={2.5} name="현재가" dot={false} />
                 <Line dataKey="ma5" stroke="#3b82f6" name="5일 이동평균" dot={false} />
                 <Line dataKey="ma20" stroke="#f59e0b" name="20일 이동평균" dot={false} />
@@ -280,11 +292,11 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
 
             {chartType === "캔들" && (
               <ComposedChart data={historicalData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_COLOR} vertical={false} />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_TICK} />
+                <Tooltip {...CHART_TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{ color: "#7b8fa6", fontSize: 12 }} />
                 <Bar dataKey="close" fill="#10b981" name="종가" />
                 <Line dataKey="ma5" stroke="#3b82f6" name="5일 이동평균" dot={false} />
                 <Line dataKey="ma20" stroke="#f59e0b" name="20일 이동평균" dot={false} />

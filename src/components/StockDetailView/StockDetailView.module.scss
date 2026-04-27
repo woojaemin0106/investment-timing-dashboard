@@ -9,7 +9,7 @@
 }
 
 .state {
-  color: #667085;
+  color: v.$text-secondary;
   padding: 12px 4px;
 }
 
@@ -18,12 +18,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #6b7280;
+  color: v.$text-secondary;
   width: fit-content;
   margin-bottom: 4px;
+  font-size: 14px;
 
   &:hover {
-    color: #111827;
+    color: v.$text-primary;
   }
 }
 
@@ -54,35 +55,35 @@
   }
 
   p {
-    color: #374151;
+    color: v.$text-secondary;
     font-size: 15px;
   }
 }
 
 .success {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
+  background: rgba(0, 214, 143, 0.08);
+  border-color: rgba(0, 214, 143, 0.25);
 
   h4 {
-    color: #047857;
+    color: v.$green-accent;
   }
 }
 
 .warning {
-  background: #fffbeb;
-  border-color: #fde68a;
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
 
   h4 {
-    color: #b45309;
+    color: v.$yellow-accent;
   }
 }
 
 .danger {
-  background: #fef2f2;
-  border-color: #fecaca;
+  background: rgba(255, 77, 106, 0.08);
+  border-color: rgba(255, 77, 106, 0.25);
 
   h4 {
-    color: #b91c1c;
+    color: v.$red-accent;
   }
 }
 
@@ -90,21 +91,23 @@
   h2 {
     font-size: 30px;
     font-weight: 700;
+    color: v.$text-primary;
   }
 }
 
 .code {
   display: inline-block;
   padding: 4px 12px;
-  background: #f3f4f6;
+  background: v.$bg-card-highlight;
   border-radius: 8px;
   font-family: var(--font-geist-mono), monospace;
   font-size: 14px;
   margin: 8px 0 6px;
+  color: v.$text-secondary;
 }
 
 .category {
-  color: #6b7280;
+  color: v.$text-secondary;
   font-size: 14px;
 }
 
@@ -115,15 +118,16 @@
 .currentPrice {
   font-size: 30px;
   font-weight: 700;
+  color: v.$text-primary;
 }
 
 .changeUp {
-  color: #ef4444;
+  color: v.$red-accent;
   font-weight: 700;
 }
 
 .changeDown {
-  color: #3b82f6;
+  color: v.$blue-accent;
   font-weight: 700;
 }
 
@@ -134,37 +138,36 @@
 }
 
 .statCard {
-  @include m.card;
+  @include m.card-dark;
   padding: 16px;
 }
 
 .label {
   font-size: 13px;
-  color: #6b7280;
+  color: v.$text-secondary;
 }
 
 .value {
   margin-top: 8px;
   font-size: 30px;
   font-weight: 700;
+  color: v.$text-primary;
 }
 
 .valueSuccess {
-  color: #047857;
+  color: v.$green-accent;
 }
 
 .valueDanger {
-  color: #b91c1c;
+  color: v.$red-accent;
 }
 
 .valueNeutral {
-  color: #374151;
+  color: v.$text-primary;
 }
 
 .chartSection {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  @include m.card-dark;
   padding: 24px;
 }
 
@@ -173,6 +176,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  h3 {
+    color: v.$text-primary;
+  }
 }
 
 .chartControls {
@@ -182,24 +189,28 @@
 
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  padding: 3px;
 
   button {
     @include m.button-reset;
     padding: 6px 12px;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.3s ease;
-    background: #f3f4f6;
-    color: #6b7280;
+    background: transparent;
+    color: v.$text-secondary;
+    font-size: 13px;
 
     &:hover {
-      background: #e5e7eb;
+      color: v.$text-primary;
     }
   }
 }
 
 .active {
-  background: #10b981 !important;
+  background: v.$emerald-500 !important;
   color: #fff !important;
 }
 
@@ -209,11 +220,12 @@
 }
 
 .technicalIndicators {
-  @include m.card;
+  @include m.card-dark;
   padding: 20px;
 
   h3 {
     margin-bottom: 14px;
+    color: v.$text-primary;
   }
 }
 
@@ -224,24 +236,26 @@
 }
 
 .indicatorCard {
-  border: 1px solid #e5e7eb;
+  border: 1px solid v.$border-dark;
   border-radius: 10px;
   padding: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: v.$bg-card-highlight;
 }
 
 .indicatorInfo {
   .label {
     font-size: 13px;
-    color: #6b7280;
+    color: v.$text-secondary;
   }
 
   .value {
     margin-top: 4px;
     font-size: 20px;
     font-weight: 700;
+    color: v.$text-primary;
   }
 }
 
@@ -253,18 +267,18 @@
 }
 
 .statusDanger {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: rgba(255, 77, 106, 0.15);
+  color: v.$red-accent;
 }
 
 .statusSuccess {
-  background: #dcfce7;
-  color: #047857;
+  background: rgba(0, 214, 143, 0.15);
+  color: v.$green-accent;
 }
 
 .statusNeutral {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: rgba(59, 130, 246, 0.12);
+  color: v.$blue-accent;
 }
 
 @media (max-width: 1200px) {

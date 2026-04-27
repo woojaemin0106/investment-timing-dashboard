@@ -1,217 +1,811 @@
 @use "../../styles/variables" as v;
 @use "../../styles/mixins" as m;
 
+// ══════════════════════════════════════
+//  Layout
+// ══════════════════════════════════════
+
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
 }
 
 .state {
-  color: #667085;
+  color: v.$text-secondary;
   padding: 14px 4px;
 }
+
+// ══════════════════════════════════════
+//  Header
+// ══════════════════════════════════════
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-
-  h1 {
-    font-size: 34px;
-    letter-spacing: -0.02em;
-  }
-
-  p {
-    margin-top: 4px;
-    font-size: 14px;
-    color: v.$gray-500;
-  }
+  align-items: center;
+  gap: 16px;
 }
 
-.controls {
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: v.$text-primary;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.headerRight {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 10px;
 }
 
 .searchBox {
-  width: 320px;
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid v.$gray-200;
+  border: 1px solid v.$border-dark;
   border-radius: 10px;
-  padding: 0 10px;
-  background: #fff;
-  color: v.$gray-500;
+  padding: 0 12px;
+  background: v.$bg-input;
+  color: v.$text-secondary;
+  width: 260px;
 }
 
 .search {
   flex: 1;
   border: 0;
   border-radius: 10px;
-  padding: 10px 0;
+  padding: 9px 0;
   outline: none;
   background: transparent;
+  color: v.$text-primary;
+  font-size: 13px;
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
 }
 
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 2px;
+  background: v.$bg-card;
+  border-radius: 8px;
+  padding: 3px;
 }
 
 .tab {
   @include m.button-reset;
   @include m.smooth;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  background: #f1f2f4;
-  padding: 7px 12px;
+  border-radius: 6px;
+  padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;
-  color: v.$gray-500;
-}
+  color: v.$text-secondary;
 
-.active {
-  background: v.$emerald-50;
-  border-color: #b9ebd8;
-  color: v.$emerald-500;
-}
-
-.filterMeta {
-  margin-left: auto;
-  color: v.$gray-500;
-  font-size: 13px;
-}
-
-.tableCard {
-  @include m.card;
-  overflow: hidden;
-  border-radius: 14px;
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
+  &:hover {
+    color: v.$text-primary;
   }
+}
+
+.tabActive {
+  background: v.$emerald-500;
+  color: #fff;
+}
+
+.iconBtn {
+  @include m.button-reset;
+  @include m.smooth;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+
+  &:hover {
+    color: v.$text-primary;
+    background: v.$bg-card-highlight;
+  }
+}
+
+// ══════════════════════════════════════
+//  Summary Cards
+// ══════════════════════════════════════
+
+.summaryRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.summaryCard {
+  @include m.card-dark;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summaryHighlight {
+  background: linear-gradient(135deg, rgba(0, 214, 143, 0.05), transparent);
+  border-color: rgba(0, 214, 143, 0.3) !important;
+
+  .summaryLabel {
+    color: v.$text-secondary;
+  }
+
+  .summaryValue {
+    color: v.$green-accent !important;
+  }
+
+  .summaryChange {
+    color: v.$green-accent !important;
+  }
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: v.$text-secondary;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.summaryValue {
+  font-size: 26px;
+  font-weight: 700;
+  color: v.$text-primary;
+  letter-spacing: -0.02em;
+}
+
+.summaryChange {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summaryMeta {
+  font-size: 12px;
+  color: v.$text-muted;
+}
+
+.up {
+  color: v.$green-accent;
+}
+
+.down {
+  color: v.$red-accent;
+}
+
+// ══════════════════════════════════════
+//  Middle Row — Chart + Crypto
+// ══════════════════════════════════════
+
+.middleRow {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+}
+
+.chartCard {
+  @include m.card-dark;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.chartTitle {
+  font-size: 14px;
+  color: v.$text-secondary;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.chartStats {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.chartBigValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.chartChangeTag {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chartMeta {
+  font-size: 12px;
+  color: v.$text-muted;
+}
+
+.chartRanges {
+  display: flex;
+  gap: 2px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.rangeBtn {
+  @include m.button-reset;
+  @include m.smooth;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$text-secondary;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+.rangeBtnActive {
+  background: v.$bg-card;
+  color: v.$text-primary;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.chartArea {
+  flex: 1;
+}
+
+.miniStatsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid v.$border-dark;
+}
+
+.miniStat {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-right: 1px solid v.$border-dark;
+  opacity: 0.5;
+  @include m.smooth;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.activeStat {
+  opacity: 1;
+}
+
+.miniStatLabel {
+  font-size: 12px;
+  color: v.$text-secondary;
+}
+
+.miniStatValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.miniStatChange {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+// ── Crypto Cards ──
+
+.cryptoCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cryptoCard {
+  @include m.card-dark;
+  padding: 16px;
+  cursor: pointer;
+  @include m.smooth;
+  flex: 1;
+
+  &:hover {
+    border-color: v.$border-dark-subtle;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.cryptoHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cryptoIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.ethIcon {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+.cryptoInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cryptoName {
+  font-size: 14px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.cryptoCode {
+  font-size: 11px;
+  color: v.$text-muted;
+}
+
+.cryptoPrice {
+  text-align: right;
+}
+
+.cryptoPriceValue {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.cryptoChange {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cryptoChart {
+  margin: 10px -4px 6px;
+}
+
+.cryptoFooter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  font-size: 11px;
+  color: v.$text-secondary;
+  padding-top: 8px;
+  border-top: 1px solid v.$border-dark;
+
+  b {
+    color: v.$text-primary;
+    font-weight: 600;
+  }
+}
+
+// ══════════════════════════════════════
+//  Bottom Row — Tables + RSI
+// ══════════════════════════════════════
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 300px;
+  gap: 14px;
+}
+
+.tablePanel {
+  @include m.card-dark;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.tablePanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: v.$text-primary;
+
+    small {
+      font-size: 11px;
+      color: v.$text-muted;
+      font-weight: 400;
+      margin-left: 6px;
+    }
+  }
+}
+
+.viewAllBtn {
+  @include m.button-reset;
+  font-size: 12px;
+  color: v.$emerald-400;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.stockTable {
+  width: 100%;
+  border-collapse: collapse;
 
   th,
   td {
-    padding: 14px 12px;
-    border-bottom: 1px solid v.$gray-100;
+    padding: 10px 6px;
     text-align: left;
-    font-size: 14px;
+    font-size: 12px;
+    border-bottom: 1px solid v.$border-dark;
   }
 
   th {
-    color: #707684;
-    font-size: 12px;
-    background: #fafafa;
+    color: v.$text-muted;
+    font-size: 11px;
     font-weight: 600;
+    text-transform: uppercase;
   }
 
   tbody tr {
     cursor: pointer;
-  }
+    @include m.smooth;
 
-  tbody tr:hover {
-    background: v.$gray-50;
-  }
+    &:hover {
+      background: v.$bg-card-highlight;
+    }
 
-  td:first-child {
-    strong {
-      display: block;
+    &:last-child td {
+      border-bottom: none;
     }
   }
-}
 
-@media (max-width: 1200px) {
-  .header {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .searchBox {
-    width: 100%;
-  }
-
-  .controls {
-    flex-wrap: wrap;
-  }
-
-  .filterMeta {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .tableCard {
-    overflow-x: auto;
-
-    table {
-      min-width: 980px;
-    }
+  td {
+    color: v.$text-secondary;
   }
 }
 
-.code {
-  color: #6b7280;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 13px;
+.stockCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.category {
-  background: #f3f4f6;
-  color: #4b5563;
+.stockSymbol {
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 12px;
+  background: v.$bg-card-highlight;
+  color: v.$text-secondary;
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  text-transform: uppercase;
+}
+
+.stockName {
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.stockCategory {
+  font-size: 10px;
+  color: v.$text-muted;
 }
 
 .price {
   font-weight: 700;
+  color: v.$text-primary !important;
 }
 
-.rsi {
+.badge {
   display: inline-block;
-  min-width: 30px;
-  text-align: center;
-  background: #f3f4f6;
-  border-radius: 7px;
-  padding: 2px 6px;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
   font-weight: 700;
 }
 
-.signalBadge {
+.badgeSuccess {
+  background: rgba(0, 214, 143, 0.15);
+  color: v.$green-accent;
+}
+
+.badgeWarning {
+  background: rgba(245, 197, 66, 0.15);
+  color: v.$yellow-accent;
+}
+
+.badgeDanger {
+  background: rgba(255, 77, 106, 0.15);
+  color: v.$red-accent;
+}
+
+// ── RSI Panel ──
+
+.rsiPanel {
+  @include m.card-dark;
+  padding: 16px;
+}
+
+.rsiLegend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: v.$text-secondary;
+
+  i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+}
+
+.dotDanger {
+  background: v.$red-accent;
+}
+
+.dotOrange {
+  background: v.$yellow-accent;
+}
+
+.dotSuccess {
+  background: v.$green-accent;
+}
+
+.rsiBarList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rsiBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rsiBarLabel {
+  width: 56px;
+  font-size: 11px;
+  color: v.$text-secondary;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.rsiBarTrack {
+  flex: 1;
+  height: 14px;
+  background: v.$bg-card-highlight;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rsiBarFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.rsiBarValue {
+  width: 28px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+// ══════════════════════════════════════
+//  Responsive
+// ══════════════════════════════════════
+
+@media (max-width: 1400px) {
+  .summaryRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .middleRow {
+    grid-template-columns: 1fr;
+  }
+
+  .cryptoCol {
+    flex-direction: row;
+  }
+
+  .bottomRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rsiPanel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1000px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .headerRight {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .searchBox {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .summaryRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cryptoCol {
+    flex-direction: column;
+  }
+
+  .bottomRow {
+    grid-template-columns: 1fr;
+  }
+
+  .miniStatsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ══════════════════════════════════════
+//  Full Table View (탭 필터링 시)
+// ══════════════════════════════════════
+
+.fullTableSection {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 18px;
+}
+
+.fullTablePanel {
+  @include m.card-dark;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.filterMeta {
+  font-size: 13px;
+  color: v.$text-secondary;
+}
+
+.fullStockTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+
+  th,
+  td {
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid v.$border-dark;
+  }
+
+  th {
+    color: v.$text-muted;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: v.$bg-card-highlight;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    @include m.smooth;
+
+    &:hover {
+      background: v.$bg-card-highlight;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  td {
+    color: v.$text-secondary;
+  }
+
+  td strong {
+    color: v.$text-primary;
+    font-weight: 600;
+  }
+}
+
+.codeCell {
+  color: v.$text-muted;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+}
+
+.categoryTag {
+  background: v.$bg-card-highlight;
+  color: v.$text-secondary;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.rsiTag {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  background: v.$bg-card-highlight;
+  border-radius: 7px;
+  padding: 2px 6px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.signalBadgeFull {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
-.success {
-  background: #e8f9f0;
-  color: #198754;
+.rsiPanelSide {
+  @include m.card-dark;
+  padding: 16px;
+  height: fit-content;
 }
 
-.warning {
-  background: #fff8df;
-  color: #a46b00;
-}
+@media (max-width: 1200px) {
+  .fullTableSection {
+    grid-template-columns: 1fr;
+  }
 
-.danger {
-  background: #ffecec;
-  color: #b42318;
-}
-
-.up {
-  color: #d92d20;
-  font-weight: 700;
-}
-
-.down {
-  color: #175cd3;
-  font-weight: 700;
+  .fullStockTable {
+    display: block;
+    overflow-x: auto;
+  }
 }

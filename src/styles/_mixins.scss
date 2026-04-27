@@ -7,6 +7,13 @@
   box-shadow: v.$shadow-sm;
 }
 
+@mixin card-dark {
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+  border-radius: v.$card-radius;
+  box-shadow: v.$shadow-card;
+}
+
 @mixin button-reset {
   border: 0;
   background: transparent;
@@ -16,4 +23,11 @@
 
 @mixin smooth {
   transition: v.$transition-base;
+}
+
+@mixin glass-dark {
+  background: rgba(23, 34, 52, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid v.$border-dark;
+  border-radius: v.$card-radius;
 }
