@@ -1,0 +1,19 @@
+@use "./variables" as v;
+
+@mixin card {
+  background: #fff;
+  border: 1px solid v.$gray-200;
+  border-radius: v.$card-radius;
+  box-shadow: v.$shadow-sm;
+}
+
+@mixin button-reset {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+@mixin smooth {
+  transition: v.$transition-base;
+}

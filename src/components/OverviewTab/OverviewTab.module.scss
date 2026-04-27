@@ -1,0 +1,217 @@
+@use "../../styles/variables" as v;
+@use "../../styles/mixins" as m;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.state {
+  color: #667085;
+  padding: 14px 4px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  h1 {
+    font-size: 34px;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin-top: 4px;
+    font-size: 14px;
+    color: v.$gray-500;
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.searchBox {
+  width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid v.$gray-200;
+  border-radius: 10px;
+  padding: 0 10px;
+  background: #fff;
+  color: v.$gray-500;
+}
+
+.search {
+  flex: 1;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 0;
+  outline: none;
+  background: transparent;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  @include m.button-reset;
+  @include m.smooth;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: #f1f2f4;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$gray-500;
+}
+
+.active {
+  background: v.$emerald-50;
+  border-color: #b9ebd8;
+  color: v.$emerald-500;
+}
+
+.filterMeta {
+  margin-left: auto;
+  color: v.$gray-500;
+  font-size: 13px;
+}
+
+.tableCard {
+  @include m.card;
+  overflow: hidden;
+  border-radius: 14px;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 14px 12px;
+    border-bottom: 1px solid v.$gray-100;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  th {
+    color: #707684;
+    font-size: 12px;
+    background: #fafafa;
+    font-weight: 600;
+  }
+
+  tbody tr {
+    cursor: pointer;
+  }
+
+  tbody tr:hover {
+    background: v.$gray-50;
+  }
+
+  td:first-child {
+    strong {
+      display: block;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .searchBox {
+    width: 100%;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+  }
+
+  .filterMeta {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .tableCard {
+    overflow-x: auto;
+
+    table {
+      min-width: 980px;
+    }
+  }
+}
+
+.code {
+  color: #6b7280;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+}
+
+.category {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.price {
+  font-weight: 700;
+}
+
+.rsi {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  background: #f3f4f6;
+  border-radius: 7px;
+  padding: 2px 6px;
+  font-weight: 700;
+}
+
+.signalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.success {
+  background: #e8f9f0;
+  color: #198754;
+}
+
+.warning {
+  background: #fff8df;
+  color: #a46b00;
+}
+
+.danger {
+  background: #ffecec;
+  color: #b42318;
+}
+
+.up {
+  color: #d92d20;
+  font-weight: 700;
+}
+
+.down {
+  color: #175cd3;
+  font-weight: 700;
+}
