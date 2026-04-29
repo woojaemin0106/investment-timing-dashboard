@@ -1,5 +1,4 @@
 import { DollarSign } from "lucide-react";
-import { mockIndices } from "@/mocks/investpulse-data";
 import { Stock } from "@/types";
 import styles from "./OverviewTab.module.scss";
 
@@ -37,22 +36,17 @@ export default function SummaryCardsSection({ allStocks, activeChart, formatChan
       </article>
       <article className={styles.summaryCard}>
         <div className={styles.summaryLabel}>매수 신호 종목</div>
-        <div className={styles.summaryValue}>{allStocks.filter((s) => s.signal === "success").length}</div>
+        <div className={`${styles.summaryValue} ${styles.up}`}>
+          {allStocks.filter((s) => s.signal === "success").length}
+        </div>
         <div className={styles.summaryMeta}>적기 포착</div>
       </article>
       <article className={styles.summaryCard}>
-        <div className={styles.summaryLabel}>KOSPI</div>
-        <div className={styles.summaryValue}>{mockIndices.kospi.value.toLocaleString()}</div>
-        <div className={`${styles.summaryChange} ${styles.up}`}>
-          ▲ +{mockIndices.kospi.change}%
+        <div className={styles.summaryLabel}>과매수 경고 종목</div>
+        <div className={`${styles.summaryValue} ${styles.down}`}>
+          {allStocks.filter((s) => s.signal === "danger").length}
         </div>
-      </article>
-      <article className={styles.summaryCard}>
-        <div className={styles.summaryLabel}>NASDAQ</div>
-        <div className={styles.summaryValue}>{mockIndices.nasdaq.value.toLocaleString()}</div>
-        <div className={`${styles.summaryChange} ${styles.up}`}>
-          ▲ +{mockIndices.nasdaq.change}%
-        </div>
+        <div className={styles.summaryMeta}>단기 조정 주의</div>
       </article>
     </div>
   );

@@ -70,11 +70,11 @@
 }
 
 .warning {
-  background: rgba(245, 158, 11, 0.08);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.25);
 
   h4 {
-    color: v.$yellow-accent;
+    color: #F97316;
   }
 }
 
@@ -88,10 +88,24 @@
 }
 
 .titleSection {
-  h2 {
-    font-size: 30px;
-    font-weight: 700;
-    color: v.$text-primary;
+  .nameRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h2 {
+      font-size: 30px;
+      font-weight: 700;
+      color: v.$text-primary;
+    }
+  }
+}
+
+.heartIcon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.15);
   }
 }
 
@@ -163,7 +177,7 @@
 }
 
 .valueNeutral {
-  color: v.$text-primary;
+  color: #F97316;
 }
 
 .chartSection {
@@ -277,8 +291,8 @@
 }
 
 .statusNeutral {
-  background: rgba(59, 130, 246, 0.12);
-  color: v.$blue-accent;
+  background: rgba(249, 115, 22, 0.12);
+  color: #F97316;
 }
 
 @media (max-width: 1200px) {

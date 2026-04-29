@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
 import { Stock, MarketType, SignalType } from "@/types";
 import { signalLabels } from "@/lib/investpulse-config";
 import styles from "./OverviewTab.module.scss";
@@ -21,6 +23,14 @@ export default function MarketTabView({
   formatChange,
 }: MarketTabViewProps) {
   const router = useRouter();
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  const toggleFavorite = (code: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFavorites((prev) =>
+      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
+    );
+  };
 
   const signalBadge = (sig: string) => {
     if (sig === "success") return { cls: styles.badgeSuccess, text: "매수" };
@@ -60,14 +70,24 @@ export default function MarketTabView({
             </tr>
           </thead>
           <tbody>
-            {filteredStocks.map((stock) => {
+            {filteredStocks.map((stock, index) => {
               const badge = signalBadge(stock.signal);
               const prefix = stock.market === "국내" ? "₩" : "$";
               return (
                 <tr key={stock.code} onClick={() => router.push(`/stock/${stock.code}`)}>
                   <td className={styles.codeCell}>{stock.code}</td>
                   <td>
-                    <strong>{stock.name}</strong>
+                    <div className={styles.nameCell}>
+                      <span className={styles.rank}>{index + 1}</span>
+                      <Heart 
+                        size={14} 
+                        fill={favorites.includes(stock.code) ? "#ff4d6a" : "transparent"} 
+                        color={favorites.includes(stock.code) ? "#ff4d6a" : "#7b8fa6"} 
+                        className={styles.heartIcon}
+                        onClick={(e) => toggleFavorite(stock.code, e)}
+                      />
+                      <strong>{stock.name}</strong>
+                    </div>
                   </td>
                   <td>
                     <span className={styles.categoryTag}>{stock.category}</span>
@@ -86,10 +106,10 @@ export default function MarketTabView({
                   <td>
                     <span className={`${styles.signalBadgeFull} ${badge.cls}`}>
                       {stock.signal === "success"
-                        ? "🟢 매수 적기"
+                        ? "매수 적기"
                         : stock.signal === "warning"
-                        ? "🟡 중립"
-                        : "🔴 과매수"}
+                        ? "중립"
+                        : "과매수"}
                     </span>
                   </td>
                 </tr>

@@ -214,6 +214,16 @@
   margin-top: 5px;
 }
 
+.heartIcon {
+  cursor: pointer;
+  margin-top: 2px;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.15);
+  }
+}
+
 .popularInfo {
   display: flex;
   flex-direction: column;

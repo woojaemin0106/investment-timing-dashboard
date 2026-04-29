@@ -14,7 +14,7 @@ import CryptoWidget from "./CryptoWidget";
 import MarketTable from "./MarketTable";
 import MarketTabView from "./MarketTabView";
 
-const marketTabs: Array<"전체" | MarketType> = ["전체", "국내", "해외", "BTC"];
+const marketTabs: Array<"전체" | MarketType> = ["전체", "국내", "해외", "BTC", "ETF"];
 
 const formatKRW = (value: number) => {
   if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(1)}B`;
@@ -40,12 +40,13 @@ export default function OverviewTab() {
   const signal = (searchParams?.get("signal") as SignalType) || "all";
   const marketParam = searchParams?.get("market");
   const market: "전체" | MarketType =
-    marketParam === "국내" || marketParam === "해외" || marketParam === "BTC" ? marketParam : "전체";
+    marketParam === "국내" || marketParam === "해외" || marketParam === "BTC" || marketParam === "ETF" ? marketParam : "전체";
   const allStocks = useMemo(() => data?.stocks ?? [], [data?.stocks]);
 
   const domesticStocks = useMemo(() => allStocks.filter((s) => s.market === "국내"), [allStocks]);
   const foreignStocks = useMemo(() => allStocks.filter((s) => s.market === "해외"), [allStocks]);
   const btcStocks = useMemo(() => allStocks.filter((s) => s.market === "BTC"), [allStocks]);
+  const etfStocks = useMemo(() => allStocks.filter((s) => s.market === "ETF"), [allStocks]);
   const btcStock = useMemo(() => allStocks.find((s) => s.code === "BTC-USD"), [allStocks]);
   const ethStock = useMemo(() => allStocks.find((s) => s.code === "ETH-USD"), [allStocks]);
 
@@ -58,7 +59,7 @@ export default function OverviewTab() {
       .map((s) => ({
         name: s.code,
         rsi: s.rsi,
-        fill: s.rsi > 70 ? "#ff4d6a" : s.rsi < 30 ? "#00d68f" : "#f59e0b",
+        fill: s.rsi > 70 ? "#ff4d6a" : s.rsi < 30 ? "#00d68f" : "#F97316",
       }));
   }, [allStocks, market]);
 
@@ -83,7 +84,8 @@ export default function OverviewTab() {
     if (market === "국내") return domesticStocks;
     if (market === "해외") return foreignStocks;
     if (market === "BTC") return btcStocks;
-    return []; // 전체 탭일 땐 이걸 직접 표출 안 함 (하단에서 국내,해외 명시)
+    if (market === "ETF") return etfStocks;
+    return []; // 전체 탭일 땐 이걸 직접 표출 안 함 (하단에서 명시)
   };
 
   const getChartData = () => {
@@ -171,6 +173,7 @@ export default function OverviewTab() {
               targetTab="해외"
               formatChange={formatChange}
             />
+
 
             {/* RSI Panel */}
             <div className={styles.rsiPanel}>
