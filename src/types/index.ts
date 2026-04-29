@@ -1,5 +1,5 @@
 export type SignalType = "all" | "success" | "warning" | "danger";
-export type MarketType = "국내" | "해외" | "BTC";
+export type MarketType = "국내" | "해외" | "BTC" | "ETF";
 
 export interface Stock {
   code: string;

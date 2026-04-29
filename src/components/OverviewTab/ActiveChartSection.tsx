@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { mockIndices, mockExchangeRate, mockPortfolioHistory } from "@/mocks/investpulse-data";
 import styles from "./OverviewTab.module.scss";
@@ -26,6 +27,25 @@ export default function ActiveChartSection({
   formatChange,
   formatKRW,
 }: ActiveChartSectionProps) {
+  const router = useRouter();
+
+  const handleChartClick = () => {
+    switch (chartTarget) {
+      case "KOSPI":
+        router.push("/stock/KODEX200"); // KOSPI 대표 ETF
+        break;
+      case "NASDAQ":
+        router.push("/stock/QQQ"); // NASDAQ 대표 ETF
+        break;
+      case "S&P 500":
+        router.push("/stock/SPY"); // S&P 500 대표 ETF
+        break;
+      case "USD/KRW":
+        // 환율은 클릭 시 상세페이지 이동 없음
+        break;
+    }
+  };
+
   return (
     <div className={styles.chartCard}>
       <div className={styles.chartHeader}>
@@ -57,7 +77,11 @@ export default function ActiveChartSection({
         </div>
       </div>
       
-      <div className={styles.chartArea}>
+      <div 
+        className={styles.chartArea} 
+        style={{ cursor: chartTarget === "USD/KRW" ? "default" : "pointer" }} 
+        onClick={chartTarget === "USD/KRW" ? undefined : handleChartClick}
+      >
         <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={mockPortfolioHistory}>
             <defs>

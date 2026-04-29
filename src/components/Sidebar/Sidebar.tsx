@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
@@ -9,7 +10,8 @@ import {
   Globe, 
   Diamond, 
   LibrarySquare,
-  Activity
+  Activity,
+  Heart
 } from "lucide-react";
 import styles from "./Sidebar.module.scss";
 
@@ -27,9 +29,48 @@ export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+
+  const toggleFavorite = (code: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFavorites((prev) =>
+      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
+    );
+  };
+
   const onLogoClick = () => {
     router.push("/");
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const timeString = currentTime.toLocaleTimeString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  // 간단한 시장 영업시간 판별 (09:00 ~ 15:30 KST)
+  const isMarketOpen = (() => {
+    const formatter = new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(currentTime);
+    const hour = parseInt(parts.find(p => p.type === "hour")?.value || "0", 10);
+    const minute = parseInt(parts.find(p => p.type === "minute")?.value || "0", 10);
+    const totalMinutes = hour * 60 + minute;
+    return totalMinutes >= 9 * 60 && totalMinutes <= 15 * 60 + 30;
+  })();
 
   return (
     <aside className={styles.sidebar}>
@@ -45,9 +86,9 @@ export default function Sidebar() {
       {/* 상단 시장 열림 상태 */}
       <div className={styles.marketStatus}>
         <span className={styles.statusDot}></span>
-        <span>시장 열림</span>
+        <span>{isMarketOpen ? "시장 열림" : "시장 마감"}</span>
         <span className={styles.statusDotSep}>·</span>
-        <span className={styles.statusTime}>KST 15:33</span>
+        <span className={styles.statusTime}>KST {timeString}</span>
       </div>
 
       <div className={styles.scrollArea}>
@@ -85,7 +126,7 @@ export default function Sidebar() {
               <Diamond size={16} className={styles.marketIcon} />
               <span>BTC</span>
             </Link>
-            <Link href="/market/etf" className={styles.menuItem}>
+            <Link href="/?market=ETF" className={styles.menuItem}>
               <LibrarySquare size={16} className={styles.marketIcon} />
               <span>ETF</span>
             </Link>
@@ -96,11 +137,18 @@ export default function Sidebar() {
 
         {/* 인기 종목 섹션 */}
         <section className={styles.section}>
-          <p className={styles.sectionTitle}>인기종목</p>
+          <p className={styles.sectionTitle}>관심종목</p>
           <div className={styles.popularList}>
             {popularStocks.map((stock) => (
               <div key={stock.code} className={styles.popularItem}>
                 <div className={styles.popularLeft}>
+                  <Heart 
+                    size={14} 
+                    fill={favorites.includes(stock.code) ? "#ff4d6a" : "transparent"} 
+                    color={favorites.includes(stock.code) ? "#ff4d6a" : "#7b8fa6"} 
+                    className={styles.heartIcon}
+                    onClick={(e) => toggleFavorite(stock.code, e)}
+                  />
                   <i className={styles.colorDot} style={{ background: stock.color }} />
                   <div className={styles.popularInfo}>
                     <span className={styles.popularName}>{stock.name}</span>

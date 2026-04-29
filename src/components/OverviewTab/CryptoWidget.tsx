@@ -45,9 +45,9 @@ export default function CryptoWidget({ btcStock, ethStock, formatChange }: Crypt
           </div>
           <div className={styles.cryptoFooter}>
             <span>거래량 <b>${btcStock.volume}</b></span>
-            <span>RSI(14) <b style={{ color: btcStock.rsi > 70 ? "#ff4d6a" : "#00d68f" }}>{btcStock.rsi}</b></span>
+            <span>RSI(14) <b style={{ color: btcStock.rsi > 70 ? "#ff4d6a" : btcStock.rsi < 30 ? "#00d68f" : "#F59E0B" }}>{btcStock.rsi}</b></span>
             <span>24시 최고 <b>${(btcStock.price * 1.01).toLocaleString()}</b></span>
-            <span>RSI 상태 <b>{btcStock.rsi > 70 ? "과매수" : btcStock.rsi < 30 ? "과매도" : "중립"}</b></span>
+            <span>RSI 상태 <b style={{ color: btcStock.rsi > 70 ? "#ff4d6a" : btcStock.rsi < 30 ? "#00d68f" : "#F97316" }}>{btcStock.rsi > 70 ? "과매수" : btcStock.rsi < 30 ? "과매도" : "중립"}</b></span>
           </div>
         </div>
       )}
@@ -82,9 +82,9 @@ export default function CryptoWidget({ btcStock, ethStock, formatChange }: Crypt
           </div>
           <div className={styles.cryptoFooter}>
             <span>거래량 <b>${ethStock.volume}</b></span>
-            <span>RSI(14) <b>{ethStock.rsi}</b></span>
+            <span>RSI(14) <b style={{ color: ethStock.rsi > 70 ? "#ff4d6a" : ethStock.rsi < 30 ? "#00d68f" : "#F59E0B" }}>{ethStock.rsi}</b></span>
             <span>24시 최고 <b>${(ethStock.price * 1.01).toLocaleString()}</b></span>
-            <span>RSI 상태 <b>{ethStock.rsi > 70 ? "과매수" : ethStock.rsi < 30 ? "과매도" : "중립"}</b></span>
+            <span>RSI 상태 <b style={{ color: ethStock.rsi > 70 ? "#ff4d6a" : ethStock.rsi < 30 ? "#00d68f" : "#F97316" }}>{ethStock.rsi > 70 ? "과매수" : ethStock.rsi < 30 ? "과매도" : "중립"}</b></span>
           </div>
         </div>
       )}

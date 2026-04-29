@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -119,6 +119,7 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
   const { data, loading, error } = useInvestPulseData();
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("일");
   const [chartType, setChartType] = useState<ChartType>("영역");
+  const [isFavorite, setIsFavorite] = useState(false);
   const formatPrice = (value: number) => `₩${Math.round(value).toLocaleString()}`;
   const stock = useMemo(
     () => initialStock ?? data?.stocks.find((item) => item.code === code),
@@ -142,20 +143,20 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
     stock.signal === "success"
       ? {
           className: styles.success,
-          icon: "🟢",
+          icon: "",
           title: "매수 적기",
           description: "RSI가 낮은 수준으로 저점 구간에 진입했습니다. 장기 투자에 적합한 시기입니다.",
         }
       : stock.signal === "warning"
         ? {
             className: styles.warning,
-            icon: "🟡",
+            icon: "",
             title: "주의 관찰",
             description: "현재 중립 구간입니다. 시장 상황을 지켜보며 신중한 접근이 필요합니다.",
           }
         : {
             className: styles.danger,
-            icon: "🔴",
+            icon: "",
             title: "과매수 구간",
             description: "RSI가 높은 수준으로 과매수 구간입니다. 단기 조정 가능성을 염두에 두세요.",
           };
@@ -191,7 +192,16 @@ export default function StockDetailView({ code, stock: initialStock }: Props) {
 
       <header className={styles.stockHeader}>
         <div className={styles.titleSection}>
-          <h2>{stock.name}</h2>
+          <div className={styles.nameRow}>
+            <h2>{stock.name}</h2>
+            <Heart 
+              size={26} 
+              fill={isFavorite ? "#ff4d6a" : "transparent"} 
+              color={isFavorite ? "#ff4d6a" : "#7b8fa6"} 
+              className={styles.heartIcon}
+              onClick={() => setIsFavorite(!isFavorite)}
+            />
+          </div>
           <span className={styles.code}>{stock.code}</span>
           <p>
             <span className={styles.category}>
