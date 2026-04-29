@@ -16,12 +16,13 @@ Progress basis:
 
 ## Completed
 
-- [x] Defined shared market data contracts for prices, ranges, symbols, summaries, signals, history responses, timing responses, and anomaly points.
+- [x] Defined shared market data contracts for prices, ranges, symbols, summaries, signals, data source, history responses, timing responses, and anomaly points.
 - [x] Added deterministic mock market price data for AAPL, TSLA, NVDA, and SPY.
 - [x] Added range support for `1m`, `3m`, `6m`, and `1y`.
 - [x] Implemented moving averages, percentile, RSI, volatility, change-rate, signal, summary, and anomaly utilities.
 - [x] Implemented internal App Router API routes for market history and timing.
 - [x] Prepared server-side Twelve Data adapter with `TWELVE_DATA_API_KEY` fallback to mock data.
+- [x] Added `source: "live" | "mock"` to market API responses so UI developers can see whether the response came from Twelve Data or fallback data.
 - [x] Added typed market API client functions and React Query hooks.
 - [x] Added Playwright API contract smoke tests.
 - [x] Verified `npm run lint`, `npm run build`, and `npm run test`.
@@ -68,9 +69,15 @@ Error shape:
 }
 ```
 
+Data source:
+
+- `source: "live"` means the response used Twelve Data.
+- `source: "mock"` means the response used deterministic fallback data.
+
 ## For Overview Developer
 
 - Use `GET /api/market/timing?symbol=AAPL&range=1y` when a widget needs timing analysis.
+- Use top-level `source` if the UI needs to show or debug whether the response is live or mock-backed.
 - Use `summary.currentPrice`, `summary.changeRate`, `summary.percentile`, `summary.rsi`, `summary.volatility`, `summary.signal`, and `summary.summary` for cards or badges.
 - Use `prices` for chart series. Each point includes `date`, OHLC, `volume`, and optional `ma20` / `ma60`.
 - Existing Overview UI can stay mock-backed until the UI owner chooses where to connect these values.
@@ -79,6 +86,7 @@ Error shape:
 
 - Use `GET /api/market/history?symbol=TSLA&range=6m` for chart-only data.
 - Use `GET /api/market/timing?symbol=TSLA&range=6m` when the page also needs summary/anomaly data.
+- Use top-level `source` for live/mock debug labels when needed.
 - `prices` are sorted by ascending date and are safe for Recharts line, area, or composed charts.
 
 ## For Anomaly Developer
