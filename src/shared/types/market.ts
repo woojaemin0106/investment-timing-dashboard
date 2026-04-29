@@ -4,6 +4,8 @@ export type MarketRange = "1m" | "3m" | "6m" | "1y";
 
 export type InvestmentSignal = "cold" | "neutral" | "hot";
 
+export type MarketDataSource = "live" | "mock";
+
 export interface PricePoint {
   date: string;
   open: number;
@@ -37,10 +39,12 @@ export interface AnomalyPoint {
 export interface MarketHistoryResponse {
   symbol: MarketSymbol;
   range: MarketRange;
+  source: MarketDataSource;
   prices: PricePoint[];
 }
 
 export interface MarketTimingResponse {
+  source: MarketDataSource;
   summary: MarketSummary;
   prices: PricePoint[];
   anomalies: AnomalyPoint[];

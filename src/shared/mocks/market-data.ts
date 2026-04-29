@@ -120,6 +120,7 @@ export function getMockMarketHistory(
   return {
     symbol,
     range,
+    source: "mock",
     prices: getMockPrices(symbol, range),
   };
 }

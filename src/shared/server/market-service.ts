@@ -5,6 +5,7 @@ import type {
   MarketSymbol,
   MarketTimingResponse,
   PricePoint,
+  MarketDataSource,
 } from "@/shared/types/market";
 import { getMockPrices } from "@/shared/mocks/market-data";
 import {
@@ -19,30 +20,45 @@ import {
 } from "@/shared/lib/market-analysis";
 import { fetchTwelveDataHistory } from "@/shared/server/twelve-data";
 
-async function loadPriceSeries(symbol: MarketSymbol, range: MarketRange): Promise<PricePoint[]> {
+interface LoadedPriceSeries {
+  prices: PricePoint[];
+  source: MarketDataSource;
+}
+
+async function loadPriceSeries(symbol: MarketSymbol, range: MarketRange): Promise<LoadedPriceSeries> {
   const apiKey = process.env.TWELVE_DATA_API_KEY;
   if (!apiKey) {
-    return getMockPrices(symbol, range);
+    return {
+      prices: getMockPrices(symbol, range),
+      source: "mock",
+    };
   }
 
   const livePrices = await fetchTwelveDataHistory({ symbol, range, apiKey });
   if (livePrices === null || livePrices.length === 0) {
-    return getMockPrices(symbol, range);
+    return {
+      prices: getMockPrices(symbol, range),
+      source: "mock",
+    };
   }
 
-  return livePrices;
+  return {
+    prices: livePrices,
+    source: "live",
+  };
 }
 
 export async function getMarketHistory(
   symbol: MarketSymbol,
   range: MarketRange,
 ): Promise<MarketHistoryResponse> {
-  const prices = await loadPriceSeries(symbol, range);
+  const { prices, source } = await loadPriceSeries(symbol, range);
   const analyzedPrices = applyMovingAverages(prices);
 
   return {
     symbol,
     range,
+    source,
     prices: analyzedPrices,
   };
 }
@@ -81,6 +97,7 @@ export async function getMarketTiming(
   };
 
   return {
+    source: history.source,
     summary,
     prices,
     anomalies: detectAnomalies(prices),
