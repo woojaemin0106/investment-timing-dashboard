@@ -1,5 +1,8 @@
 import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
 import { Stock, MarketType } from "@/types";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { classifyStockSignal, getMarketHref, getSignalTone } from "@/shared/lib/market-display";
 import styles from "./OverviewTab.module.scss";
 
 type MarketTableProps = {
@@ -19,14 +22,10 @@ export default function MarketTable({
 }: MarketTableProps) {
   const router = useRouter();
 
-  const signalBadge = (sig: string) => {
-    if (sig === "success") return { cls: styles.badgeSuccess, text: "매수" };
-    if (sig === "warning") return { cls: styles.badgeWarning, text: "중립" };
-    return { cls: styles.badgeDanger, text: "과매수" };
-  };
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const switchToTab = () => {
-    router.push(`/?market=${targetTab}`);
+    router.push(getMarketHref(targetTab));
   };
 
   return (
@@ -50,14 +49,32 @@ export default function MarketTable({
         </thead>
         <tbody>
           {stocks.map((s) => {
-            const badge = signalBadge(s.signal);
+            const signalTone = getSignalTone(classifyStockSignal(s));
+            const badgeClass =
+              signalTone.signal === "success"
+                ? styles.badgeSuccess
+                : signalTone.signal === "warning"
+                  ? styles.badgeWarning
+                  : styles.badgeDanger;
             return (
               <tr key={s.code} onClick={() => router.push(`/stock/${s.code}`)}>
                 <td>
                   <div className={styles.stockCell}>
                     <span className={styles.stockSymbol}>{s.code.slice(0, 2)}</span>
                     <div>
-                      <div className={styles.stockName}>{s.name}</div>
+                      <div className={styles.stockName} style={{ display: "flex", alignItems: "center" }}>
+                        {s.name}
+                        <Heart 
+                          size={14} 
+                          fill={isFavorite(s.code) ? "#7b8fa6" : "transparent"} 
+                          color="#7b8fa6" 
+                          style={{ marginLeft: 6, cursor: "pointer" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(s.code);
+                          }}
+                        />
+                      </div>
                       <div className={styles.stockCategory}>{s.category}</div>
                     </div>
                   </div>
@@ -72,7 +89,7 @@ export default function MarketTable({
                 <td>{s.volume}</td>
                 <td>{s.rsi}</td>
                 <td>
-                  <span className={`${styles.badge} ${badge.cls}`}>{badge.text}</span>
+                  <span className={`${styles.badge} ${badgeClass}`}>{signalTone.label}</span>
                 </td>
               </tr>
             );

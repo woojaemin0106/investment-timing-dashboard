@@ -1,20 +1,22 @@
 import { useRouter } from "next/navigation";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
-import { mockIndices, mockExchangeRate, mockPortfolioHistory } from "@/mocks/investpulse-data";
+import { mockIndices, mockExchangeRate } from "@/mocks/investpulse-data";
+import {
+  type ChartRange,
+  type OverviewChartPoint,
+  type OverviewChartTarget,
+} from "@/shared/lib/chart-series";
 import styles from "./OverviewTab.module.scss";
-
-type ChartRange = "1D" | "1W" | "1M" | "3M" | "1Y";
-type ChartTarget = "USD/KRW" | "KOSPI" | "NASDAQ" | "S&P 500";
 
 type ActiveChartSectionProps = {
   activeChart: { title: string; value: number; change: number; prev: number; prefix: string };
-  chartRanges: ChartRange[];
+  chartRanges: readonly ChartRange[];
   chartRange: ChartRange;
   setChartRange: (r: ChartRange) => void;
-  chartTarget: ChartTarget;
-  setChartTarget: (t: ChartTarget) => void;
+  chartTarget: OverviewChartTarget;
+  setChartTarget: (t: OverviewChartTarget) => void;
   formatChange: (val: number) => string;
-  formatKRW: (val: number) => string;
+  chartData: OverviewChartPoint[];
 };
 
 export default function ActiveChartSection({
@@ -25,9 +27,14 @@ export default function ActiveChartSection({
   chartTarget,
   setChartTarget,
   formatChange,
-  formatKRW,
+  chartData,
 }: ActiveChartSectionProps) {
   const router = useRouter();
+
+  const formatChartValue = (value: number) => {
+    const formatted = value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+    return chartTarget === "USD/KRW" ? `₩${formatted}` : formatted;
+  };
 
   const handleChartClick = () => {
     switch (chartTarget) {
@@ -41,7 +48,7 @@ export default function ActiveChartSection({
         router.push("/stock/SPY"); // S&P 500 대표 ETF
         break;
       case "USD/KRW":
-        // 환율은 클릭 시 상세페이지 이동 없음
+        router.push("/stock/USDKRW");
         break;
     }
   };
@@ -79,11 +86,11 @@ export default function ActiveChartSection({
       
       <div 
         className={styles.chartArea} 
-        style={{ cursor: chartTarget === "USD/KRW" ? "default" : "pointer" }} 
-        onClick={chartTarget === "USD/KRW" ? undefined : handleChartClick}
+        style={{ cursor: "pointer" }} 
+        onClick={handleChartClick}
       >
         <ResponsiveContainer width="100%" height={280}>
-          <AreaChart data={mockPortfolioHistory}>
+          <AreaChart data={chartData}>
             <defs>
               <linearGradient id="portfolioGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
@@ -101,7 +108,7 @@ export default function ActiveChartSection({
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#4d6278", fontSize: 11 }}
-              tickFormatter={(v: number) => `₩${(v / 1000000).toFixed(1)}M`}
+              tickFormatter={(v: number) => formatChartValue(v)}
             />
             <Tooltip
               contentStyle={{
@@ -111,7 +118,7 @@ export default function ActiveChartSection({
                 color: "#e4eaf2",
                 fontSize: 12,
               }}
-              formatter={(v) => [formatKRW(Number(v)), "지표"]}
+              formatter={(v) => [formatChartValue(Number(v)), "지표"]}
             />
             <Area
               dataKey="value"

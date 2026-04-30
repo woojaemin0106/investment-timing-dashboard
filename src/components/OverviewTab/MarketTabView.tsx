@@ -1,17 +1,20 @@
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { Stock, MarketType, SignalType } from "@/types";
 import { signalLabels } from "@/lib/investpulse-config";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { classifyStockSignal, getMarketLabel, getMarketPrefix, getSignalTone } from "@/shared/lib/market-display";
 import styles from "./OverviewTab.module.scss";
 
 type MarketTabViewProps = {
-  market: MarketType;
+  market: "전체" | MarketType;
   tableStocks: Stock[];
   keyword: string;
   signal: SignalType;
   rsiData: { name: string; rsi: number; fill: string }[];
   formatChange: (val: number) => string;
+  title: string;
+  subtitle: string;
 };
 
 export default function MarketTabView({
@@ -21,22 +24,11 @@ export default function MarketTabView({
   signal,
   rsiData,
   formatChange,
+  title,
+  subtitle,
 }: MarketTabViewProps) {
   const router = useRouter();
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  const toggleFavorite = (code: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setFavorites((prev) =>
-      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
-    );
-  };
-
-  const signalBadge = (sig: string) => {
-    if (sig === "success") return { cls: styles.badgeSuccess, text: "매수" };
-    if (sig === "warning") return { cls: styles.badgeWarning, text: "중립" };
-    return { cls: styles.badgeDanger, text: "과매수" };
-  };
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const filteredStocks = (tableStocks ?? []).filter((stock) => {
     const matchesKeyword =
@@ -46,19 +38,24 @@ export default function MarketTabView({
     return matchesKeyword;
   });
 
+  const marketLabel = getMarketLabel(market);
+
   return (
     <div className={styles.fullTableSection}>
       <div className={styles.fullTablePanel}>
         <div className={styles.tablePanelHeader}>
           <h3>
-            {market === "국내" ? "국내 주식" : market === "해외" ? "해외 주식" : "가상자산 (BTC)"}
-            <small>{tableStocks?.length ?? 0}개 종목</small>
+            {title || marketLabel}
+            <small>{subtitle}</small>
           </h3>
-          <p className={styles.filterMeta}>신호 필터: {signalLabels[signal]}</p>
+          <p className={styles.filterMeta}>
+            신호 필터: {signalLabels[signal]} · {filteredStocks.length}개 종목
+          </p>
         </div>
         <table className={styles.fullStockTable}>
           <thead>
             <tr>
+              <th>시장</th>
               <th>종목코드</th>
               <th>종목명</th>
               <th>업종</th>
@@ -71,20 +68,32 @@ export default function MarketTabView({
           </thead>
           <tbody>
             {filteredStocks.map((stock, index) => {
-              const badge = signalBadge(stock.signal);
-              const prefix = stock.market === "국내" ? "₩" : "$";
+              const signalTone = getSignalTone(classifyStockSignal(stock));
+              const prefix = getMarketPrefix(stock.market);
+              const badgeClass =
+                signalTone.signal === "success"
+                  ? styles.badgeSuccess
+                  : signalTone.signal === "warning"
+                    ? styles.badgeWarning
+                    : styles.badgeDanger;
               return (
                 <tr key={stock.code} onClick={() => router.push(`/stock/${stock.code}`)}>
+                  <td>
+                    <span className={styles.marketTag}>{stock.market}</span>
+                  </td>
                   <td className={styles.codeCell}>{stock.code}</td>
                   <td>
                     <div className={styles.nameCell}>
                       <span className={styles.rank}>{index + 1}</span>
                       <Heart 
                         size={14} 
-                        fill={favorites.includes(stock.code) ? "#ff4d6a" : "transparent"} 
-                        color={favorites.includes(stock.code) ? "#ff4d6a" : "#7b8fa6"} 
+                        fill={isFavorite(stock.code) ? "#7b8fa6" : "transparent"} 
+                        color="#7b8fa6" 
                         className={styles.heartIcon}
-                        onClick={(e) => toggleFavorite(stock.code, e)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(stock.code);
+                        }}
                       />
                       <strong>{stock.name}</strong>
                     </div>
@@ -104,12 +113,8 @@ export default function MarketTabView({
                     <span className={styles.rsiTag}>{stock.rsi}</span>
                   </td>
                   <td>
-                    <span className={`${styles.signalBadgeFull} ${badge.cls}`}>
-                      {stock.signal === "success"
-                        ? "매수 적기"
-                        : stock.signal === "warning"
-                        ? "중립"
-                        : "과매수"}
+                    <span className={`${styles.signalBadgeFull} ${badgeClass}`}>
+                      {signalTone.label}
                     </span>
                   </td>
                 </tr>
@@ -123,17 +128,22 @@ export default function MarketTabView({
       <div className={styles.rsiPanelSide}>
         <div className={styles.tablePanelHeader}>
           <h3>
-            RSI 현황 <small>{market}</small>
+            RSI 현황 <small>시장 기준</small>
           </h3>
         </div>
         <div className={styles.rsiLegend}>
-          <span><i className={styles.dotDanger} /> 과매수 (70↑)</span>
-          <span><i className={styles.dotOrange} /> 중립 (30~70)</span>
           <span><i className={styles.dotSuccess} /> 과매도 (30↓)</span>
+          <span><i className={styles.dotOrange} /> 중립 (30~70)</span>
+          <span><i className={styles.dotDanger} /> 과매수 (70↑)</span>
         </div>
         <div className={styles.rsiBarList}>
           {rsiData.map((item) => (
-            <div key={item.name} className={styles.rsiBarRow}>
+            <div 
+              key={item.name} 
+              className={styles.rsiBarRow}
+              style={{ cursor: "pointer" }}
+              onClick={() => router.push(`/stock/${item.name}`)}
+            >
               <span className={styles.rsiBarLabel}>{item.name}</span>
               <div className={styles.rsiBarTrack}>
                 <div

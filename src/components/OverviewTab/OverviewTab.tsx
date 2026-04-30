@@ -4,7 +4,21 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useInvestPulseData } from "@/lib/use-investpulse-data";
 import { MarketType, SignalType } from "@/types";
+import { signalLabels } from "@/lib/investpulse-config";
 import { mockIndices, mockExchangeRate } from "@/mocks/investpulse-data";
+import {
+  chartRangeOptions,
+  generateOverviewChartSeries,
+  type ChartRange,
+  type OverviewChartTarget,
+} from "@/shared/lib/chart-series";
+import {
+  classifyStockSignal,
+  getMarketLabel,
+  getSignalTone,
+  isMarketType,
+  isSignalType,
+} from "@/shared/lib/market-display";
 import styles from "./OverviewTab.module.scss";
 
 import OverviewHeader from "./OverviewHeader";
@@ -16,31 +30,21 @@ import MarketTabView from "./MarketTabView";
 
 const marketTabs: Array<"전체" | MarketType> = ["전체", "국내", "해외", "BTC", "ETF"];
 
-const formatKRW = (value: number) => {
-  if (value >= 1_000_000_000) return `₩${(value / 1_000_000_000).toFixed(1)}B`;
-  if (value >= 1_000_000) return `₩${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000) return `₩${(value / 1_000).toFixed(1)}K`;
-  return `₩${value.toLocaleString()}`;
-};
-
 const formatChange = (value: number) => (value >= 0 ? `+${value}%` : `${value}%`);
-
-type ChartRange = "1D" | "1W" | "1M" | "3M" | "1Y";
-type ChartTarget = "USD/KRW" | "KOSPI" | "NASDAQ" | "S&P 500";
-const chartRanges: ChartRange[] = ["1D", "1W", "1M", "3M", "1Y"];
 
 export default function OverviewTab() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data, loading, error } = useInvestPulseData();
   const [keyword, setKeyword] = useState("");
-  const [chartRange, setChartRange] = useState<ChartRange>("1W");
-  const [chartTarget, setChartTarget] = useState<ChartTarget>("USD/KRW");
+  const [chartRange, setChartRange] = useState<ChartRange>("주");
+  const [chartTarget, setChartTarget] = useState<OverviewChartTarget>("USD/KRW");
+  const [activeSummaryIdx, setActiveSummaryIdx] = useState(0);
 
-  const signal = (searchParams?.get("signal") as SignalType) || "all";
+  const signalParam = searchParams?.get("signal");
+  const signal: SignalType = isSignalType(signalParam) ? signalParam : "all";
   const marketParam = searchParams?.get("market");
-  const market: "전체" | MarketType =
-    marketParam === "국내" || marketParam === "해외" || marketParam === "BTC" || marketParam === "ETF" ? marketParam : "전체";
+  const market: "전체" | MarketType = isMarketType(marketParam) ? marketParam : "전체";
   const allStocks = useMemo(() => data?.stocks ?? [], [data?.stocks]);
 
   const domesticStocks = useMemo(() => allStocks.filter((s) => s.market === "국내"), [allStocks]);
@@ -50,45 +54,32 @@ export default function OverviewTab() {
   const btcStock = useMemo(() => allStocks.find((s) => s.code === "BTC-USD"), [allStocks]);
   const ethStock = useMemo(() => allStocks.find((s) => s.code === "ETH-USD"), [allStocks]);
 
-  const rsiData = useMemo(() => {
-    return allStocks
-      .filter((s) => {
-        if (market === "전체") return true;
-        return s.market === market;
-      })
-      .map((s) => ({
-        name: s.code,
-        rsi: s.rsi,
-        fill: s.rsi > 70 ? "#ff4d6a" : s.rsi < 30 ? "#00d68f" : "#F97316",
-      }));
-  }, [allStocks, market]);
-
-  const handleTabClick = (tab: "전체" | MarketType) => {
-    const params = new URLSearchParams(searchParams?.toString());
-
-    if (tab === "전체") {
-      params.delete("market");
-    } else {
-      params.set("market", tab);
-    }
-
-    const query = params.toString();
-    router.push(query ? `/?${query}` : "/");
-  };
-
-  if (loading) return <section className={styles.state}>데이터를 불러오는 중...</section>;
-  if (error) return <section className={styles.state}>오류: {error}</section>;
-
-  // 탭별로 다른 테이블 표시할 종목 데이터
-  const getTableStocks = () => {
+  const marketStocks = useMemo(() => {
     if (market === "국내") return domesticStocks;
     if (market === "해외") return foreignStocks;
     if (market === "BTC") return btcStocks;
     if (market === "ETF") return etfStocks;
-    return []; // 전체 탭일 땐 이걸 직접 표출 안 함 (하단에서 명시)
-  };
+    return allStocks;
+  }, [allStocks, btcStocks, domesticStocks, etfStocks, foreignStocks, market]);
 
-  const getChartData = () => {
+  const visibleStocks = useMemo(
+    () => (
+      signal === "all"
+        ? marketStocks
+        : allStocks.filter((stock) => classifyStockSignal(stock) === signal)
+    ),
+    [allStocks, marketStocks, signal],
+  );
+
+  const rsiData = useMemo(() => {
+    return visibleStocks.map((s) => ({
+      name: s.code,
+      rsi: s.rsi,
+      fill: getSignalTone(classifyStockSignal(s)).bar,
+    }));
+  }, [visibleStocks]);
+
+  const activeChart = useMemo(() => {
     switch (chartTarget) {
       case "KOSPI":
         return {
@@ -124,10 +115,57 @@ export default function OverviewTab() {
           prefix: "₩",
         };
     }
+  }, [chartTarget]);
+
+  const chartData = useMemo(
+    () => generateOverviewChartSeries(activeChart.value, chartTarget, chartRange, Math.sign(activeChart.change) || 1),
+    [activeChart.change, activeChart.value, chartRange, chartTarget],
+  );
+
+  const handleSignalChange = (nextSignal: SignalType, idx: number) => {
+    setActiveSummaryIdx(idx);
+    if (nextSignal === "all") {
+      router.push("/");
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams?.toString());
+    params.delete("market");
+    params.set("signal", nextSignal);
+
+    const query = params.toString();
+    router.push(query ? `/?${query}` : "/");
   };
 
-  const activeChart = getChartData();
-  const tableStocks = getTableStocks();
+  const shouldShowSignalTable = signal !== "all" || market !== "전체";
+  const tableMarket = signal !== "all" ? "전체" : market;
+
+  const fullTableTitle =
+    signal !== "all"
+      ? `${signalLabels[signal]} 종목`
+      : getMarketLabel(tableMarket);
+
+  const fullTableSubtitle = signal !== "all" ? "전체 시장" : "시장 기준";
+
+  const handleTabClick = (tab: "전체" | MarketType) => {
+    const params = new URLSearchParams(searchParams?.toString());
+
+    if (tab === "전체") {
+      setActiveSummaryIdx(0);
+      params.delete("market");
+      params.delete("signal");
+    } else {
+      setActiveSummaryIdx(0);
+      params.set("market", tab);
+      params.delete("signal");
+    }
+
+    const query = params.toString();
+    router.push(query ? `/?${query}` : "/");
+  };
+
+  if (loading) return <section className={styles.state}>데이터를 불러오는 중...</section>;
+  if (error) return <section className={styles.state}>오류: {error}</section>;
 
   return (
     <section className={styles.wrapper}>
@@ -139,20 +177,27 @@ export default function OverviewTab() {
         handleTabClick={handleTabClick}
       />
 
-      <SummaryCardsSection allStocks={allStocks} activeChart={activeChart} formatChange={formatChange} />
+      <SummaryCardsSection
+        allStocks={allStocks}
+        activeChart={activeChart}
+        activeChartTarget={chartTarget}
+        formatChange={formatChange}
+        activeSummaryIdx={activeSummaryIdx}
+        onSignalChange={handleSignalChange}
+      />
 
-      {market === "전체" ? (
+      {!shouldShowSignalTable ? (
         <>
           <div className={styles.middleRow}>
             <ActiveChartSection
               activeChart={activeChart}
-              chartRanges={chartRanges}
+              chartRanges={chartRangeOptions}
               chartRange={chartRange}
               setChartRange={setChartRange}
               chartTarget={chartTarget}
               setChartTarget={setChartTarget}
               formatChange={formatChange}
-              formatKRW={formatKRW}
+              chartData={chartData}
             />
 
             <CryptoWidget btcStock={btcStock} ethStock={ethStock} formatChange={formatChange} />
@@ -181,13 +226,18 @@ export default function OverviewTab() {
                 <h3>RSI 현황 <small>시장 기준</small></h3>
               </div>
               <div className={styles.rsiLegend}>
-                <span><i className={styles.dotDanger} /> 과매수 (70↑)</span>
-                <span><i className={styles.dotOrange} /> 중립 (30~70)</span>
                 <span><i className={styles.dotSuccess} /> 과매도 (30↓)</span>
+                <span><i className={styles.dotOrange} /> 중립 (30~70)</span>
+                <span><i className={styles.dotDanger} /> 과매수 (70↑)</span>
               </div>
               <div className={styles.rsiBarList}>
                 {rsiData.map((item) => (
-                  <div key={item.name} className={styles.rsiBarRow}>
+                  <div 
+                    key={item.name} 
+                    className={styles.rsiBarRow}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => router.push(`/stock/${item.name}`)}
+                  >
                     <span className={styles.rsiBarLabel}>{item.name}</span>
                     <div className={styles.rsiBarTrack}>
                       <div
@@ -204,12 +254,14 @@ export default function OverviewTab() {
         </>
       ) : (
         <MarketTabView
-          market={market}
-          tableStocks={tableStocks}
-          keyword={keyword}
+          market={tableMarket}
           signal={signal}
+          tableStocks={visibleStocks}
+          keyword={keyword}
           rsiData={rsiData}
           formatChange={formatChange}
+          title={fullTableTitle}
+          subtitle={fullTableSubtitle}
         />
       )}
     </section>

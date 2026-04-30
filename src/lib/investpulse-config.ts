@@ -2,8 +2,8 @@ import { SignalType } from "@/types";
 
 export const signalLabels: Record<SignalType, string> = {
   all: "전체",
-  success: "매수 적기",
-  warning: "주의 관찰",
+  success: "과매도",
+  warning: "중립",
   danger: "과매수",
 };
 
