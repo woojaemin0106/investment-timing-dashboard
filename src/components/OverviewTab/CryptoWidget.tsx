@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import { Stock } from "@/types";
 import { mockBtcHistory, mockEthHistory } from "@/mocks/investpulse-data";
+import { classifyRsi, getSignalTone } from "@/shared/lib/market-display";
 import styles from "./OverviewTab.module.scss";
 
 type CryptoWidgetProps = {
@@ -12,6 +13,8 @@ type CryptoWidgetProps = {
 
 export default function CryptoWidget({ btcStock, ethStock, formatChange }: CryptoWidgetProps) {
   const router = useRouter();
+  const btcSignal = btcStock ? getSignalTone(classifyRsi(btcStock.rsi)) : null;
+  const ethSignal = ethStock ? getSignalTone(classifyRsi(ethStock.rsi)) : null;
 
   return (
     <div className={styles.cryptoCol}>
@@ -45,9 +48,9 @@ export default function CryptoWidget({ btcStock, ethStock, formatChange }: Crypt
           </div>
           <div className={styles.cryptoFooter}>
             <span>거래량 <b>${btcStock.volume}</b></span>
-            <span>RSI(14) <b style={{ color: btcStock.rsi > 70 ? "#ff4d6a" : btcStock.rsi < 30 ? "#00d68f" : "#F59E0B" }}>{btcStock.rsi}</b></span>
+            <span>RSI(14) <b style={{ color: btcSignal?.bar }}>{btcStock.rsi}</b></span>
             <span>24시 최고 <b>${(btcStock.price * 1.01).toLocaleString()}</b></span>
-            <span>RSI 상태 <b style={{ color: btcStock.rsi > 70 ? "#ff4d6a" : btcStock.rsi < 30 ? "#00d68f" : "#F97316" }}>{btcStock.rsi > 70 ? "과매수" : btcStock.rsi < 30 ? "과매도" : "중립"}</b></span>
+            <span>RSI 상태 <b style={{ color: btcSignal?.dot }}>{btcSignal?.label}</b></span>
           </div>
         </div>
       )}
@@ -82,9 +85,9 @@ export default function CryptoWidget({ btcStock, ethStock, formatChange }: Crypt
           </div>
           <div className={styles.cryptoFooter}>
             <span>거래량 <b>${ethStock.volume}</b></span>
-            <span>RSI(14) <b style={{ color: ethStock.rsi > 70 ? "#ff4d6a" : ethStock.rsi < 30 ? "#00d68f" : "#F59E0B" }}>{ethStock.rsi}</b></span>
+            <span>RSI(14) <b style={{ color: ethSignal?.bar }}>{ethStock.rsi}</b></span>
             <span>24시 최고 <b>${(ethStock.price * 1.01).toLocaleString()}</b></span>
-            <span>RSI 상태 <b style={{ color: ethStock.rsi > 70 ? "#ff4d6a" : ethStock.rsi < 30 ? "#00d68f" : "#F97316" }}>{ethStock.rsi > 70 ? "과매수" : ethStock.rsi < 30 ? "과매도" : "중립"}</b></span>
+            <span>RSI 상태 <b style={{ color: ethSignal?.dot }}>{ethSignal?.label}</b></span>
           </div>
         </div>
       )}

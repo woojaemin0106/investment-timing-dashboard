@@ -1,5 +1,10 @@
 @use "../styles/variables" as v;
 
+:root {
+  --font-geist-sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-geist-mono: "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
 html,
 body {
   width: 100%;
@@ -15,7 +20,7 @@ body {
 body {
   color: v.$text-primary;
   background: v.$bg-primary;
-  font-family: var(--font-geist-sans), "Noto Sans KR", sans-serif;
+  font-family: var(--font-geist-sans);
 }
 
 a {

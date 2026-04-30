@@ -131,9 +131,30 @@
   gap: 6px;
 }
 
+.summaryCardButton {
+  @include m.button-reset;
+  @include m.smooth;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: v.$emerald-500;
+    box-shadow: 0 10px 24px rgba(16, 185, 129, 0.12);
+  }
+}
+
+.summaryCardSelected {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02));
+  border-color: v.$emerald-500 !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+}
+
 .summaryHighlight {
-  background: linear-gradient(135deg, rgba(0, 214, 143, 0.05), transparent);
-  border-color: rgba(0, 214, 143, 0.3) !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02));
+  border: 1px solid v.$emerald-500 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
   .summaryLabel {
     color: v.$text-secondary;
@@ -145,6 +166,11 @@
 
   .summaryChange {
     color: v.$green-accent !important;
+  }
+
+  // Preserve red color for overbought
+  .down {
+    color: v.$red-accent !important;
   }
 }
 
@@ -178,7 +204,7 @@
 }
 
 .down {
-  color: v.$red-accent;
+  color: v.$red-accent !important;
 }
 
 // ══════════════════════════════════════
@@ -756,6 +782,17 @@
     color: v.$text-primary;
     font-weight: 600;
   }
+}
+
+.marketTag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: v.$emerald-400;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .nameCell {
