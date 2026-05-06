@@ -1,4 +1,5 @@
 import { signalLabels } from "@/lib/investpulse-config";
+import { parseFiniteNumber } from "@/shared/lib/number-utils";
 import type { MarketType, SignalType, Stock } from "@/types";
 
 export type ClassifiedSignal = Exclude<SignalType, "all">;
@@ -30,16 +31,7 @@ export const signalDescriptions: Record<ClassifiedSignal, string> = {
 };
 
 function normalizeNumber(value: unknown): number | null {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-
-  if (typeof value === "string" && value.trim().length > 0) {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-
-  return null;
+  return parseFiniteNumber(value);
 }
 
 export function isMarketType(value: unknown): value is MarketType {

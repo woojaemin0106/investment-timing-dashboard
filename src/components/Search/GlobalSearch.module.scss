@@ -1,0 +1,205 @@
+@use "../../styles/variables" as v;
+@use "../../styles/mixins" as m;
+
+.searchContainer {
+  position: relative;
+  width: 260px;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background: v.$bg-primary;
+  border: 1px solid v.$border-dark;
+  border-radius: 8px;
+  padding: 8px 12px;
+  gap: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus-within {
+    border-color: v.$emerald-400;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+  }
+}
+
+.searchIcon {
+  color: v.$text-muted;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  @include m.button-reset;
+  flex: 1;
+  font-size: 13px;
+  color: v.$text-primary;
+  background: transparent;
+  min-width: 0;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+}
+
+.clearBtn {
+  @include m.button-reset;
+  color: v.$text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: v.$bg-card-highlight;
+  
+  &:hover {
+    color: v.$text-primary;
+    background: v.$border-dark-subtle;
+  }
+}
+
+// ── Dropdown ──
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 320px;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.15s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.listHeader {
+  font-size: 11px;
+  font-weight: 600;
+  color: v.$text-muted;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid v.$border-dark;
+}
+
+.resultList {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: v.$border-dark-subtle;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+.resultItem {
+  @include m.button-reset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid v.$border-dark;
+  transition: background 0.15s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: v.$bg-card-highlight;
+  }
+}
+
+.stockInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: v.$emerald-400;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.nameCode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.code {
+  font-size: 11px;
+  color: v.$text-muted;
+}
+
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.change {
+  font-size: 12px;
+  font-weight: 500;
+  
+  &.up {
+    color: v.$red-accent;
+  }
+  
+  &.down {
+    color: v.$blue-accent;
+  }
+}
+
+.emptyResult {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: v.$text-muted;
+}

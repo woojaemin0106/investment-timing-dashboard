@@ -54,6 +54,19 @@ export default function OverviewTab() {
   const btcStock = useMemo(() => allStocks.find((s) => s.code === "BTC-USD"), [allStocks]);
   const ethStock = useMemo(() => allStocks.find((s) => s.code === "ETH-USD"), [allStocks]);
 
+  // Apply keyword filter to base domestic/foreign stocks
+  const filteredDomesticStocks = useMemo(() => {
+    if (!keyword.trim()) return domesticStocks;
+    const kw = keyword.trim().toLowerCase();
+    return domesticStocks.filter((s) => s.name.toLowerCase().includes(kw) || s.code.toLowerCase().includes(kw));
+  }, [domesticStocks, keyword]);
+
+  const filteredForeignStocks = useMemo(() => {
+    if (!keyword.trim()) return foreignStocks;
+    const kw = keyword.trim().toLowerCase();
+    return foreignStocks.filter((s) => s.name.toLowerCase().includes(kw) || s.code.toLowerCase().includes(kw));
+  }, [foreignStocks, keyword]);
+
   const marketStocks = useMemo(() => {
     if (market === "국내") return domesticStocks;
     if (market === "해외") return foreignStocks;
@@ -62,14 +75,21 @@ export default function OverviewTab() {
     return allStocks;
   }, [allStocks, btcStocks, domesticStocks, etfStocks, foreignStocks, market]);
 
-  const visibleStocks = useMemo(
-    () => (
-      signal === "all"
-        ? marketStocks
-        : allStocks.filter((stock) => classifyStockSignal(stock) === signal)
-    ),
-    [allStocks, marketStocks, signal],
-  );
+  const visibleStocks = useMemo(() => {
+    let result = signal === "all"
+      ? marketStocks
+      : allStocks.filter((stock) => classifyStockSignal(stock) === signal);
+
+    if (keyword.trim()) {
+      const kw = keyword.trim().toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.name.toLowerCase().includes(kw) ||
+          s.code.toLowerCase().includes(kw)
+      );
+    }
+    return result;
+  }, [allStocks, marketStocks, signal, keyword]);
 
   const rsiData = useMemo(() => {
     return visibleStocks.map((s) => ({
@@ -205,14 +225,14 @@ export default function OverviewTab() {
 
           <div className={styles.bottomRow}>
             <MarketTable
-              stocks={domesticStocks}
+              stocks={filteredDomesticStocks}
               title="국내 주식"
               currencyPrefix="₩"
               targetTab="국내"
               formatChange={formatChange}
             />
             <MarketTable
-              stocks={foreignStocks}
+              stocks={filteredForeignStocks}
               title="해외 주식"
               currencyPrefix="$"
               targetTab="해외"

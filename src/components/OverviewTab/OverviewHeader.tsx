@@ -1,5 +1,6 @@
-import { Search, Bell, Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import { MarketType } from "@/types";
+import GlobalSearch from "@/components/Search/GlobalSearch";
 import styles from "./OverviewTab.module.scss";
 
 type OverviewHeaderProps = {
@@ -19,17 +20,15 @@ export default function OverviewHeader({
 }: OverviewHeaderProps) {
   return (
     <div className={styles.header}>
-      <h1 className={styles.pageTitle}>마켓 오버뷰</h1>
+      <div className={styles.headerLeft}>
+        <h1 className={styles.pageTitle}>마켓 오버뷰</h1>
+        <span className={styles.liveBadge}>
+          <i className={styles.liveDot} />
+          실시간 분석 중
+        </span>
+      </div>
       <div className={styles.headerRight}>
-        <label className={styles.searchBox}>
-          <Search size={14} />
-          <input
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className={styles.search}
-            placeholder="종목명 또는 코드 검색..."
-          />
-        </label>
+        <GlobalSearch keyword={keyword} setKeyword={setKeyword} />
         <div className={styles.tabs}>
           {marketTabs.map((tab) => (
             <button

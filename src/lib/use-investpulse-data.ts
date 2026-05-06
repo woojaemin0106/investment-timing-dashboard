@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { InvestPulsePayload } from "@/types";
 import { getStocksApiUrl } from "@/lib/investpulse-config";
+import { parseInvestPulsePayload } from "@/shared/lib/investpulse-schema";
 
 interface UseInvestPulseDataResult {
   data: InvestPulsePayload | null;
@@ -26,7 +27,11 @@ export const useInvestPulseData = (): UseInvestPulseDataResult => {
         if (!response.ok) {
           throw new Error("데이터를 불러오지 못했습니다.");
         }
-        const payload = (await response.json()) as InvestPulsePayload;
+        const rawPayload = await response.json().catch(() => null);
+        const payload = parseInvestPulsePayload(rawPayload);
+        if (!payload) {
+          throw new Error("API 응답 형식이 올바르지 않습니다.");
+        }
         if (isMounted) {
           setData(payload);
         }

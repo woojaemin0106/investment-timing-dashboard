@@ -13,7 +13,6 @@ import {
   Globe, 
   Diamond, 
   LibrarySquare,
-  Activity,
   Heart
 } from "lucide-react";
 import styles from "./Sidebar.module.scss";
@@ -35,6 +34,7 @@ export default function Sidebar() {
   const marketParam = searchParams?.get("market");
 
   const isHomeActive = pathname === "/" && !marketParam;
+  const isTimingActive = pathname === "/timing";
   const isMarketActive = (market: "국내" | "해외" | "BTC" | "ETF") => pathname === "/" && marketParam === market;
 
   useEffect(() => {
@@ -66,6 +66,17 @@ export default function Sidebar() {
     return totalMinutes >= 9 * 60 && totalMinutes <= 15 * 60 + 30;
   })();
 
+  // 타이밍 분석 뱃지: 관심종목의 매수적기 + 주의필요 + 과매수 + 오늘 신호 알림(매수적기+과매수) 합계
+  const timingBadgeCount = (() => {
+    if (!data?.stocks) return 0;
+    const favStocks = data.stocks.filter((s) => favorites.includes(s.code));
+    const success = favStocks.filter((s) => classifyStockSignal(s) === "success").length;
+    const warning = favStocks.filter((s) => classifyStockSignal(s) === "warning").length;
+    const danger = favStocks.filter((s) => classifyStockSignal(s) === "danger").length;
+    const alertCount = success + danger; // 오늘 신호 알림
+    return success + warning + danger + alertCount;
+  })();
+
   return (
     <aside className={styles.sidebar}>
       <button type="button" className={styles.logo} onClick={onLogoClick}>
@@ -94,10 +105,10 @@ export default function Sidebar() {
               <BarChart3 size={16} />
               <span>전체 종목 현황</span>
             </Link>
-            <Link href="/timing" className={styles.menuItem}>
+            <Link href="/timing" className={`${styles.menuItem} ${isTimingActive ? styles.active : ""}`}>
               <LineChart size={16} />
               <span>타이밍 분석</span>
-              <span className={styles.badge}>3</span>
+              {timingBadgeCount > 0 && <span className={styles.badge}>{timingBadgeCount}</span>}
             </Link>
           </nav>
         </section>
@@ -176,17 +187,6 @@ export default function Sidebar() {
           </div>
         </section>
       </div>
-
-      {/* 실시간 분석 (기존 유지) */}
-      <section className={styles.analysisCard}>
-        <span className={styles.analysisIcon}>
-          <Activity size={14} />
-        </span>
-        <div>
-          <p>실시간 분석</p>
-          <small>모니터링 중</small>
-        </div>
-      </section>
     </aside>
   );
 }

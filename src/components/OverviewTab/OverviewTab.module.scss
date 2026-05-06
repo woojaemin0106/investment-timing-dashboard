@@ -27,12 +27,46 @@
   gap: 16px;
 }
 
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .pageTitle {
   font-size: 22px;
   font-weight: 700;
   color: v.$text-primary;
   letter-spacing: -0.02em;
   white-space: nowrap;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: v.$emerald-400;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: v.$emerald-400;
+  box-shadow: 0 0 8px v.$emerald-400;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .headerRight {

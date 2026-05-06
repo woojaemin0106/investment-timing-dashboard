@@ -1,4 +1,5 @@
 import type { MarketRange, MarketSymbol, PricePoint } from "@/shared/types/market";
+import { parseFiniteNumber } from "@/shared/lib/number-utils";
 
 const TWELVE_DATA_BASE_URL = "https://api.twelvedata.com/time_series";
 
@@ -26,12 +27,11 @@ interface TwelveDataTimeSeriesResponse {
 }
 
 function toNumber(value: string | undefined): number | null {
-  if (value === undefined) {
-    return null;
-  }
+  return parseFiniteNumber(value);
+}
 
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function normalizeDate(datetime: string): string {
@@ -70,29 +70,39 @@ export async function fetchTwelveDataHistory({
       return null;
     }
 
-    const payload = (await response.json()) as TwelveDataTimeSeriesResponse;
+    const rawPayload = await response.json().catch(() => null);
+    if (!isObject(rawPayload)) {
+      return null;
+    }
+
+    const payload = rawPayload as TwelveDataTimeSeriesResponse;
     if (payload.status === "error" || !Array.isArray(payload.values)) {
       return null;
     }
 
     const parsedPrices = payload.values
       .map((item) => {
-        if (item.datetime === undefined) {
+        if (!isObject(item)) {
           return null;
         }
 
-        const open = toNumber(item.open);
-        const high = toNumber(item.high);
-        const low = toNumber(item.low);
-        const close = toNumber(item.close);
-        const volume = toNumber(item.volume);
+        const point = item as TwelveDataValue;
+        if (point.datetime === undefined) {
+          return null;
+        }
+
+        const open = toNumber(point.open);
+        const high = toNumber(point.high);
+        const low = toNumber(point.low);
+        const close = toNumber(point.close);
+        const volume = toNumber(point.volume);
 
         if (open === null || high === null || low === null || close === null || volume === null) {
           return null;
         }
 
         const normalized: PricePoint = {
-          date: normalizeDate(item.datetime),
+          date: normalizeDate(point.datetime),
           open,
           high,
           low,
