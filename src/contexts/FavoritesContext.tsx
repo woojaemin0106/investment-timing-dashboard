@@ -10,7 +10,7 @@ interface FavoritesContextType {
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 const FAVORITES_STORAGE_KEY = "investpulse-favorites";
-const DEFAULT_FAVORITES = ["005380", "035720", "TSLA", "AMZN", "AAPL", "ETH-USD"];
+const DEFAULT_FAVORITES = ["005930", "000660", "005380", "035720", "TSLA", "AAPL", "AMZN", "NVDA", "BTC-USD", "ETH-USD"];
 
 function readFavoritesFromStorage(): string[] {
   if (typeof window === "undefined") {
