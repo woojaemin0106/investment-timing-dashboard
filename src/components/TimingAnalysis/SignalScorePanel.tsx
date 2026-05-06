@@ -29,6 +29,17 @@ function computeSignalScore(stocks: Stock[]): number {
   return Math.round(Math.min(100, Math.max(0, score)));
 }
 
+function getDeterministicAlertTime(code: string, index: number): string {
+  const seed = [...code].reduce(
+    (sum, char, charIndex) => sum + char.charCodeAt(0) * (charIndex + 1),
+    index * 37
+  );
+  const hour = 9 + (seed % 6);
+  const minute = (seed * 17) % 60;
+
+  return `${hour}:${String(minute).padStart(2, "0")}`;
+}
+
 function generateAlerts(stocks: Stock[]): Alert[] {
   const alerts: Alert[] = [];
   for (const s of stocks) {
@@ -38,7 +49,7 @@ function generateAlerts(stocks: Stock[]): Alert[] {
       alerts.push({
         title: `${s.name} — RSI 과매도 진입`,
         sub: `RSI ${s.rsi}로 과매도 구간 진입`,
-        time: `${9 + Math.floor(Math.random() * 6)}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
+        time: getDeterministicAlertTime(s.code, alerts.length),
         color: tone.bar,
         code: s.code,
       });
@@ -46,7 +57,7 @@ function generateAlerts(stocks: Stock[]): Alert[] {
       alerts.push({
         title: `${s.name} — 과매수 주의`,
         sub: `RSI ${s.rsi}로 과매수 구간`,
-        time: `${9 + Math.floor(Math.random() * 6)}:${String(Math.floor(Math.random() * 60)).padStart(2, "0")}`,
+        time: getDeterministicAlertTime(s.code, alerts.length),
         color: tone.bar,
         code: s.code,
       });

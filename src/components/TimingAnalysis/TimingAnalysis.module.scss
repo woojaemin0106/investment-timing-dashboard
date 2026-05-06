@@ -562,6 +562,7 @@
 .detailTitle {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 
   h3 {
@@ -645,6 +646,127 @@
 .detailStatSub {
   font-size: 11px;
   color: v.$text-secondary;
+}
+
+.dataSourceBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sourceLive {
+  color: #00d68f;
+  background: rgba(0, 214, 143, 0.12);
+  border: 1px solid rgba(0, 214, 143, 0.28);
+}
+
+.sourceMock {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.sourceFallback {
+  color: v.$text-muted;
+  background: rgba(123, 143, 166, 0.1);
+  border: 1px solid rgba(123, 143, 166, 0.22);
+}
+
+.anomalySection {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid v.$border-dark;
+}
+
+.anomalyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  span:first-child {
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+
+  span:last-child {
+    font-size: 11px;
+    font-weight: 700;
+    color: v.$text-muted;
+  }
+}
+
+.anomalyEmpty {
+  margin: 0;
+  padding: 10px 12px;
+  color: v.$text-muted;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.anomalyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anomalyItem {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+}
+
+.anomalyDot {
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+}
+
+.anomalyContent {
+  min-width: 0;
+
+  p {
+    margin: 3px 0 0;
+    color: v.$text-muted;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+}
+
+.anomalyTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+
+  span {
+    color: v.$text-primary;
+    font-weight: 700;
+  }
+
+  strong {
+    color: v.$text-secondary;
+    font-size: 11px;
+  }
+}
+
+.anomalyDate {
+  color: v.$text-muted;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 // ══════════════════════════════════════
