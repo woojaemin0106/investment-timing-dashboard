@@ -17,8 +17,19 @@ import {
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { Stock } from "@/types";
-import { generatePriceHistory, type ChartRange } from "@/shared/lib/chart-series";
+import {
+  generatePriceHistory,
+  type ChartRange,
+  type StockChartPoint,
+} from "@/shared/lib/chart-series";
+import { useMarketTimingQuery } from "@/shared/hooks/use-market-data";
 import { classifyStockSignal, getSignalTone } from "@/shared/lib/market-display";
+import type {
+  AnomalyPoint,
+  MarketDataSource,
+  MarketSymbol,
+  PricePoint as MarketPricePoint,
+} from "@/shared/types/market";
 import styles from "./TimingAnalysis.module.scss";
 
 const CHART_GRID_COLOR = "#1e3048";
@@ -35,9 +46,79 @@ const CHART_TOOLTIP_STYLE = {
 
 type IndicatorTab = "RSI" | "MACD" | "볼린저" | "스토캐스틱";
 const indicatorTabs: IndicatorTab[] = ["RSI", "MACD", "볼린저", "스토캐스틱"];
+const MARKET_API_SYMBOLS = ["AAPL", "TSLA", "NVDA", "SPY"] as const satisfies readonly MarketSymbol[];
 
 interface Props {
   stock: Stock;
+}
+
+function getMarketSymbol(code: string): MarketSymbol | null {
+  const normalized = code.trim().toUpperCase();
+  return MARKET_API_SYMBOLS.includes(normalized as MarketSymbol)
+    ? (normalized as MarketSymbol)
+    : null;
+}
+
+function average(values: number[]): number {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, current) => sum + current, 0) / values.length;
+}
+
+function round(value: number): number {
+  return Number(value.toFixed(2));
+}
+
+function toChartPoint(prices: MarketPricePoint[]): StockChartPoint[] {
+  return prices.map((point, index) => {
+    const ma5 = average(prices.slice(Math.max(0, index - 4), index + 1).map((p) => p.close));
+    const ma20 =
+      point.ma20 ??
+      average(prices.slice(Math.max(0, index - 19), index + 1).map((p) => p.close));
+
+    return {
+      date: point.date.slice(5),
+      price: round(point.close),
+      open: round(point.open),
+      high: round(point.high),
+      low: round(point.low),
+      close: round(point.close),
+      ma5: round(ma5),
+      ma20: round(ma20),
+    };
+  });
+}
+
+function getSourceLabel(source: MarketDataSource | undefined, isFetching: boolean): string {
+  if (isFetching) return "API 확인 중";
+  if (source === "live") return "Live API";
+  if (source === "mock") return "Mock fallback";
+  return "기존 데이터";
+}
+
+function getAnomalyLabel(type: AnomalyPoint["type"]): string {
+  switch (type) {
+    case "surge":
+      return "급등";
+    case "drop":
+      return "급락";
+    case "volatility":
+      return "변동성";
+  }
+}
+
+function getAnomalyTone(type: AnomalyPoint["type"]): string {
+  switch (type) {
+    case "surge":
+      return "#00d68f";
+    case "drop":
+      return "#ff4d6a";
+    case "volatility":
+      return "#F97316";
+  }
+}
+
+function formatAnomalyValue(value: number): string {
+  return `${value > 0 ? "+" : ""}${value.toFixed(2)}%`;
 }
 
 // Generate RSI series data from price history
@@ -133,8 +214,18 @@ export default function DetailChart({ stock }: Props) {
   const [activeTab, setActiveTab] = useState<IndicatorTab>("RSI");
   const signal = classifyStockSignal(stock);
   const tone = getSignalTone(signal);
+  const marketSymbol = useMemo(() => getMarketSymbol(stock.code), [stock.code]);
 
-  const chartData = useMemo(
+  const marketTimingQuery = useMarketTimingQuery(
+    { symbol: marketSymbol ?? "AAPL", range: "1y" },
+    {
+      enabled: marketSymbol !== null,
+      retry: 1,
+      staleTime: 60_000,
+    }
+  );
+
+  const fallbackChartData = useMemo(
     () =>
       generatePriceHistory(
         stock.price,
@@ -145,6 +236,26 @@ export default function DetailChart({ stock }: Props) {
     [stock.code, stock.price, stock.change]
   );
 
+  const marketChartData = useMemo(() => {
+    const prices = marketTimingQuery.data?.prices ?? [];
+    return prices.length > 0 ? toChartPoint(prices) : null;
+  }, [marketTimingQuery.data?.prices]);
+
+  const chartData = marketChartData ?? fallbackChartData;
+  const marketSummary = marketTimingQuery.data?.summary;
+  const displayRsi = marketSummary?.rsi ?? stock.rsi;
+  const displayChange = marketSummary?.changeRate ?? stock.change;
+  const displayPrice = marketSummary?.currentPrice ?? stock.price;
+  const sourceLabel = !marketSymbol
+    ? "기존 데이터"
+    : marketTimingQuery.isError
+      ? "API fallback"
+      : getSourceLabel(marketTimingQuery.data?.source, marketTimingQuery.isFetching);
+  const sourceTone = marketTimingQuery.isError
+    ? "fallback"
+    : marketTimingQuery.data?.source ?? "fallback";
+  const anomalies = marketTimingQuery.data?.anomalies ?? [];
+
   const rsiData = useMemo(() => generateRsiSeries(chartData), [chartData]);
   const macdData = useMemo(() => generateMacdSeries(chartData), [chartData]);
   const bollingerData = useMemo(() => generateBollingerSeries(chartData), [chartData]);
@@ -154,16 +265,16 @@ export default function DetailChart({ stock }: Props) {
   const stats = useMemo(() => {
     const rsiLabel =
       signal === "success" ? "과매도" : signal === "danger" ? "과매수" : "중립";
-    const maLabel = stock.rsi >= 50 ? "MA20↑" : "MA20↓";
-    const trendLabel = stock.change >= 0 ? "상승" : "하단";
+    const maLabel = displayRsi >= 50 ? "MA20↑" : "MA20↓";
+    const trendLabel = displayChange >= 0 ? "상승" : "하단";
 
     switch (activeTab) {
       case "RSI":
         return [
-          { label: "RSI (14)", value: String(stock.rsi), color: tone.bar, sub: `${rsiLabel} 신호` },
-          { label: "골든크로스", value: stock.change >= 0 ? "+0.42" : "-0.18", color: "", sub: "클로스율" },
-          { label: "추세 방향", value: trendLabel, color: stock.change >= 0 ? "#00d68f" : "#ff4d6a", sub: stock.change >= 0 ? "상승 추세 유지" : "하락 추세 주의" },
-          { label: "이동평균", value: maLabel, color: "", sub: stock.rsi >= 50 ? "20일선 상향 돌파" : "20일선 하향 돌파" },
+          { label: "RSI (14)", value: displayRsi.toFixed(1), color: tone.bar, sub: `${rsiLabel} 신호` },
+          { label: "골든크로스", value: displayChange >= 0 ? "+0.42" : "-0.18", color: "", sub: "클로스율" },
+          { label: "추세 방향", value: trendLabel, color: displayChange >= 0 ? "#00d68f" : "#ff4d6a", sub: displayChange >= 0 ? "상승 추세 유지" : "하락 추세 주의" },
+          { label: "이동평균", value: maLabel, color: "", sub: displayRsi >= 50 ? "20일선 상향 돌파" : "20일선 하향 돌파" },
         ];
       case "MACD":
         return [
@@ -177,7 +288,7 @@ export default function DetailChart({ stock }: Props) {
           { label: "상단 밴드", value: bollingerData.at(-1)?.upper.toLocaleString() ?? "", color: "#ff4d6a", sub: "저항선" },
           { label: "중간 밴드", value: bollingerData.at(-1)?.middle.toLocaleString() ?? "", color: "#3b82f6", sub: "20일 이평선" },
           { label: "하단 밴드", value: bollingerData.at(-1)?.lower.toLocaleString() ?? "", color: "#00d68f", sub: "지지선" },
-          { label: "밴드 위치", value: stock.price > (bollingerData.at(-1)?.middle ?? 0) ? "상단" : "하단", color: stock.price > (bollingerData.at(-1)?.middle ?? 0) ? "#ff4d6a" : "#00d68f", sub: stock.price > (bollingerData.at(-1)?.middle ?? 0) ? "과매수 주의" : "매수 기회" },
+          { label: "밴드 위치", value: displayPrice > (bollingerData.at(-1)?.middle ?? 0) ? "상단" : "하단", color: displayPrice > (bollingerData.at(-1)?.middle ?? 0) ? "#ff4d6a" : "#00d68f", sub: displayPrice > (bollingerData.at(-1)?.middle ?? 0) ? "과매수 주의" : "매수 기회" },
         ];
       case "스토캐스틱":
         return [
@@ -187,7 +298,7 @@ export default function DetailChart({ stock }: Props) {
           { label: "크로스", value: (stochasticData.at(-1)?.k ?? 0) > (stochasticData.at(-1)?.d ?? 0) ? "골든" : "데드", color: (stochasticData.at(-1)?.k ?? 0) > (stochasticData.at(-1)?.d ?? 0) ? "#00d68f" : "#ff4d6a", sub: "%K/%D 크로스" },
         ];
     }
-  }, [activeTab, stock, signal, tone, macdData, bollingerData, stochasticData]);
+  }, [activeTab, displayChange, displayPrice, displayRsi, signal, tone, macdData, bollingerData, stochasticData]);
 
   const renderChart = () => {
     switch (activeTab) {
@@ -262,6 +373,17 @@ export default function DetailChart({ stock }: Props) {
           <span>{stock.code}</span>
           <span>·</span>
           <span>{activeTab}</span>
+          <span
+            className={`${styles.dataSourceBadge} ${
+              sourceTone === "live"
+                ? styles.sourceLive
+                : sourceTone === "mock"
+                  ? styles.sourceMock
+                  : styles.sourceFallback
+            }`}
+          >
+            {sourceLabel}
+          </span>
         </div>
         <div className={styles.detailTabs}>
           {indicatorTabs.map((tab) => (
@@ -294,6 +416,40 @@ export default function DetailChart({ stock }: Props) {
           </div>
         ))}
       </div>
+
+      {marketSymbol && (
+        <div className={styles.anomalySection}>
+          <div className={styles.anomalyHeader}>
+            <span>이상 신호</span>
+            <span>{marketTimingQuery.isLoading ? "확인 중" : `${anomalies.length}건`}</span>
+          </div>
+
+          {marketTimingQuery.isLoading ? (
+            <p className={styles.anomalyEmpty}>이상 신호를 확인하는 중입니다.</p>
+          ) : anomalies.length === 0 ? (
+            <p className={styles.anomalyEmpty}>최근 감지된 이상 신호가 없습니다.</p>
+          ) : (
+            <div className={styles.anomalyList}>
+              {anomalies.slice(0, 4).map((anomaly) => (
+                <div key={`${anomaly.date}-${anomaly.type}`} className={styles.anomalyItem}>
+                  <i
+                    className={styles.anomalyDot}
+                    style={{ background: getAnomalyTone(anomaly.type) }}
+                  />
+                  <div className={styles.anomalyContent}>
+                    <div className={styles.anomalyTitle}>
+                      <span>{getAnomalyLabel(anomaly.type)}</span>
+                      <strong>{formatAnomalyValue(anomaly.value)}</strong>
+                    </div>
+                    <p>{anomaly.description}</p>
+                  </div>
+                  <span className={styles.anomalyDate}>{anomaly.date.slice(5)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
