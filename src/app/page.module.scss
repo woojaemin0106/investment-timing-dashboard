@@ -1,0 +1,51 @@
+.page {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.08);
+  max-width: 780px;
+  padding: 2rem;
+  width: 100%;
+
+  h1 {
+    font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+    line-height: 1.2;
+    margin-bottom: 0.9rem;
+  }
+}
+
+.badge {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+}
+
+.description {
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.list {
+  display: grid;
+  gap: 0.65rem;
+  list-style: none;
+
+  li {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+  }
+}

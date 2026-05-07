@@ -1,0 +1,1088 @@
+@use "../../styles/variables" as v;
+@use "../../styles/mixins" as m;
+
+// ══════════════════════════════════════
+//  Layout
+// ══════════════════════════════════════
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+// ══════════════════════════════════════
+//  Header
+// ══════════════════════════════════════
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: v.$text-primary;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: v.$emerald-400;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: v.$emerald-400;
+  box-shadow: 0 0 8px v.$emerald-400;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerBtn {
+  @include m.button-reset;
+  @include m.smooth;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+
+  &:hover {
+    color: v.$text-primary;
+    background: v.$bg-card-highlight;
+  }
+}
+
+.iconBtn {
+  @include m.button-reset;
+  @include m.smooth;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+
+  &:hover {
+    color: v.$text-primary;
+    background: v.$bg-card-highlight;
+  }
+}
+
+.headerBtnGreen {
+  @extend .headerBtn;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: v.$emerald-400;
+
+  &:hover {
+    background: rgba(16, 185, 129, 0.18);
+    color: v.$emerald-400;
+  }
+}
+
+// ── Header Market Tabs ──
+
+.headerTabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.headerTab {
+  @include m.button-reset;
+  @include m.smooth;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$text-secondary;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+.headerTabActive {
+  background: v.$emerald-500;
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+// ── Filter Row ──
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  @include m.button-reset;
+  @include m.smooth;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+
+  &:hover {
+    color: v.$text-primary;
+    border-color: v.$border-dark-subtle;
+  }
+}
+
+.filterBtnWide {
+  padding: 7px 20px;
+}
+
+.filterActive {
+  background: v.$emerald-500;
+  color: #fff;
+  border-color: v.$emerald-500;
+
+  &:hover {
+    color: #fff;
+    border-color: v.$emerald-500;
+  }
+}
+
+.filterBuy {
+  background: rgba(0, 214, 143, 0.15);
+  color: v.$green-accent;
+  border-color: rgba(0, 214, 143, 0.3);
+
+  &:hover {
+    background: rgba(0, 214, 143, 0.22);
+    color: v.$green-accent;
+  }
+}
+
+.filterWarn {
+  background: rgba(249, 115, 22, 0.15);
+  color: v.$yellow-accent;
+  border-color: rgba(249, 115, 22, 0.3);
+
+  &:hover {
+    background: rgba(249, 115, 22, 0.22);
+    color: v.$yellow-accent;
+  }
+}
+
+.filterDanger {
+  background: rgba(255, 77, 106, 0.15);
+  color: v.$red-accent;
+  border-color: rgba(255, 77, 106, 0.3);
+
+  &:hover {
+    background: rgba(255, 77, 106, 0.22);
+    color: v.$red-accent;
+  }
+}
+
+.filterSep {
+  width: 1px;
+  height: 20px;
+  background: v.$border-dark;
+  margin: 0 4px;
+}
+
+.rsiCountBadge {
+  margin-left: 2px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+// ── Search Box ──
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid v.$border-dark;
+  border-radius: 10px;
+  padding: 0 12px;
+  background: v.$bg-input;
+  color: v.$text-secondary;
+  width: 220px;
+}
+
+.searchInput {
+  flex: 1;
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 0;
+  outline: none;
+  background: transparent;
+  color: v.$text-primary;
+  font-size: 13px;
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+}
+
+// ── Count Badge (red) ──
+
+.countBadge {
+  margin-left: auto;
+  background: v.$red-accent;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 99px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Alert badge inline (filter row) ──
+
+.alertBadgeInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$text-secondary;
+  padding: 6px 12px;
+  background: v.$bg-card;
+  border: 1px solid v.$border-dark;
+  border-radius: 8px;
+}
+
+// ── Card top right (heart + badge) ──
+
+.cardTopRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.heartIcon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+// ══════════════════════════════════════
+//  Stock Signal Cards
+// ══════════════════════════════════════
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.signalCard {
+  @include m.card-dark;
+  padding: 16px;
+  cursor: pointer;
+  @include m.smooth;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: v.$border-dark-subtle;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.signalCardSelected {
+  border-color: v.$emerald-500 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.cardStockInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: v.$bg-card-highlight;
+  color: v.$text-secondary;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.cardStockName {
+  font-size: 14px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.cardStockMarket {
+  font-size: 11px;
+  color: v.$text-muted;
+}
+
+.signalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.badgeSuccess {
+  background: rgba(0, 214, 143, 0.15);
+  color: v.$green-accent;
+}
+
+.badgeWarning {
+  background: rgba(249, 115, 22, 0.15);
+  color: v.$yellow-accent;
+}
+
+.badgeDanger {
+  background: rgba(255, 77, 106, 0.15);
+  color: v.$red-accent;
+}
+
+.cardPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.priceValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.priceChange {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.up {
+  color: v.$green-accent;
+}
+
+.down {
+  color: v.$red-accent;
+}
+
+.cardTags {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  background: v.$bg-card-highlight;
+  color: v.$text-secondary;
+}
+
+.tagSuccess {
+  background: rgba(0, 214, 143, 0.1);
+  color: v.$green-accent;
+}
+
+.tagDanger {
+  background: rgba(255, 77, 106, 0.1);
+  color: v.$red-accent;
+}
+
+.tagWarning {
+  background: rgba(249, 115, 22, 0.1);
+  color: v.$yellow-accent;
+}
+
+// RSI bar inside card
+.cardRsiRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cardRsiLabel {
+  font-size: 11px;
+  color: v.$text-muted;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.cardRsiTrack {
+  flex: 1;
+  height: 6px;
+  background: v.$bg-card-highlight;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cardRsiFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.cardRsiValue {
+  font-size: 12px;
+  font-weight: 700;
+  color: v.$text-primary;
+  width: 24px;
+  text-align: right;
+}
+
+.cardComment {
+  font-size: 11px;
+  color: v.$text-muted;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+// ══════════════════════════════════════
+//  Detail Chart Section
+// ══════════════════════════════════════
+
+.detailCard {
+  @include m.card-dark;
+  padding: 20px;
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.detailTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+
+  span {
+    font-size: 12px;
+    color: v.$text-muted;
+    font-weight: 400;
+  }
+}
+
+.detailTabs {
+  display: flex;
+  gap: 2px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.detailTab {
+  @include m.button-reset;
+  @include m.smooth;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$text-secondary;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+.detailTabActive {
+  background: v.$bg-card;
+  color: v.$text-primary;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 280px;
+}
+
+.detailStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid v.$border-dark;
+}
+
+.detailStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  border-right: 1px solid v.$border-dark;
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.detailStatLabel {
+  font-size: 11px;
+  color: v.$text-muted;
+}
+
+.detailStatValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.detailStatSub {
+  font-size: 11px;
+  color: v.$text-secondary;
+}
+
+.dataSourceBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sourceLive {
+  color: #00d68f;
+  background: rgba(0, 214, 143, 0.12);
+  border: 1px solid rgba(0, 214, 143, 0.28);
+}
+
+.sourceMock {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.sourceFallback {
+  color: v.$text-muted;
+  background: rgba(123, 143, 166, 0.1);
+  border: 1px solid rgba(123, 143, 166, 0.22);
+}
+
+.anomalySection {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid v.$border-dark;
+}
+
+.anomalyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  span:first-child {
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+
+  span:last-child {
+    font-size: 11px;
+    font-weight: 700;
+    color: v.$text-muted;
+  }
+}
+
+.anomalyEmpty {
+  margin: 0;
+  padding: 10px 12px;
+  color: v.$text-muted;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.anomalyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anomalyItem {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+}
+
+.anomalyDot {
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+}
+
+.anomalyContent {
+  min-width: 0;
+
+  p {
+    margin: 3px 0 0;
+    color: v.$text-muted;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+}
+
+.anomalyTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+
+  span {
+    color: v.$text-primary;
+    font-weight: 700;
+  }
+
+  strong {
+    color: v.$text-secondary;
+    font-size: 11px;
+  }
+}
+
+.anomalyDate {
+  color: v.$text-muted;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+// ══════════════════════════════════════
+//  Right Panel — Signal Score
+// ══════════════════════════════════════
+
+.scoreCard {
+  @include m.card-dark;
+  padding: 18px;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: v.$text-primary;
+  margin-bottom: 14px;
+}
+
+.panelTitleIcon {
+  font-size: 16px;
+}
+
+// ── Circular Gauge ──
+
+.gaugeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.gaugeWrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.gaugeCircle {
+  transform: rotate(-90deg);
+  width: 120px;
+  height: 120px;
+}
+
+.gaugeBg {
+  fill: none;
+  stroke: v.$bg-card-highlight;
+  stroke-width: 8;
+}
+
+.gaugeFill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.gaugeText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.gaugeValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: v.$text-primary;
+  display: block;
+  line-height: 1;
+}
+
+.gaugeMax {
+  font-size: 13px;
+  color: v.$text-muted;
+  font-weight: 500;
+}
+
+// ── Signal Bars (Score breakdown) ──
+
+.signalBars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.signalBarRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signalBarLabel {
+  width: 42px;
+  font-size: 11px;
+  color: v.$text-secondary;
+  font-weight: 600;
+}
+
+.signalBarTrack {
+  flex: 1;
+  height: 10px;
+  background: v.$bg-card-highlight;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.signalBarFill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.8s ease;
+}
+
+// ══════════════════════════════════════
+//  Right Panel — RSI 전체 현황
+// ══════════════════════════════════════
+
+.rsiCard {
+  @include m.card-dark;
+  padding: 18px;
+}
+
+.rsiList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rsiRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  @include m.smooth;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.rsiLabel {
+  width: 64px;
+  font-size: 11px;
+  color: v.$text-secondary;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rsiTrack {
+  flex: 1;
+  height: 12px;
+  background: v.$bg-card-highlight;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rsiFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.rsiValue {
+  width: 26px;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+// ══════════════════════════════════════
+//  Right Panel — 오늘 신호 알림
+// ══════════════════════════════════════
+
+.alertsCard {
+  @include m.card-dark;
+  padding: 18px;
+}
+
+.alertsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.alertCount {
+  font-size: 11px;
+  font-weight: 700;
+  background: v.$red-accent;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 99px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.alertsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alertItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background: v.$bg-card-highlight;
+  border-radius: 10px;
+  @include m.smooth;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(30, 38, 50, 0.9);
+  }
+}
+
+.alertDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.alertContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.alertTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$text-primary;
+  margin-bottom: 2px;
+}
+
+.alertSub {
+  font-size: 11px;
+  color: v.$text-muted;
+  line-height: 1.4;
+}
+
+.alertTime {
+  font-size: 11px;
+  color: v.$text-muted;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ══════════════════════════════════════
+//  Responsive
+// ══════════════════════════════════════
+
+@media (max-width: 1400px) {
+  .mainContent {
+    grid-template-columns: 1fr 280px;
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn {
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    > * {
+      flex: 1;
+      min-width: 260px;
+    }
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 800px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detailStat {
+    border-right: none;
+    border-bottom: 1px solid v.$border-dark;
+
+    &:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+  }
+
+  .filterRow {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

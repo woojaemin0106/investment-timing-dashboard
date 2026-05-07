@@ -1,0 +1,331 @@
+@use "../../styles/variables" as v;
+@use "../../styles/mixins" as m;
+
+.detailPage {
+  padding: 8px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.state {
+  color: v.$text-secondary;
+  padding: 12px 4px;
+}
+
+.backButton {
+  @include m.button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: v.$text-secondary;
+  width: fit-content;
+  margin-bottom: 4px;
+  font-size: 14px;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+.stockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signalBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+.signalIcon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.signalContent {
+  h4 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    color: v.$text-secondary;
+    font-size: 15px;
+  }
+}
+
+.success {
+  background: rgba(0, 214, 143, 0.08);
+  border-color: rgba(0, 214, 143, 0.25);
+
+  h4 {
+    color: v.$green-accent;
+  }
+}
+
+.warning {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.25);
+
+  h4 {
+    color: #F97316;
+  }
+}
+
+.danger {
+  background: rgba(255, 77, 106, 0.08);
+  border-color: rgba(255, 77, 106, 0.25);
+
+  h4 {
+    color: v.$red-accent;
+  }
+}
+
+.titleSection {
+  .nameRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h2 {
+      font-size: 30px;
+      font-weight: 700;
+      color: v.$text-primary;
+    }
+  }
+}
+
+.heartIcon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.15);
+  }
+}
+
+.code {
+  display: inline-block;
+  padding: 4px 12px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 14px;
+  margin: 8px 0 6px;
+  color: v.$text-secondary;
+}
+
+.category {
+  color: v.$text-secondary;
+  font-size: 14px;
+}
+
+.priceSection {
+  text-align: right;
+}
+
+.currentPrice {
+  font-size: 30px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.changeUp {
+  color: v.$red-accent;
+  font-weight: 700;
+}
+
+.changeDown {
+  color: v.$blue-accent;
+  font-weight: 700;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.statCard {
+  @include m.card-dark;
+  padding: 16px;
+}
+
+.label {
+  font-size: 13px;
+  color: v.$text-secondary;
+}
+
+.value {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: 700;
+  color: v.$text-primary;
+}
+
+.valueSuccess {
+  color: v.$green-accent;
+}
+
+.valueDanger {
+  color: v.$red-accent;
+}
+
+.valueNeutral {
+  color: #F97316;
+}
+
+.chartSection {
+  @include m.card-dark;
+  padding: 24px;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h3 {
+    color: v.$text-primary;
+  }
+}
+
+.chartControls {
+  display: flex;
+  gap: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: v.$bg-card-highlight;
+  border-radius: 8px;
+  padding: 3px;
+
+  button {
+    @include m.button-reset;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background: transparent;
+    color: v.$text-secondary;
+    font-size: 13px;
+
+    &:hover {
+      color: v.$text-primary;
+    }
+  }
+}
+
+.active {
+  background: v.$emerald-500 !important;
+  color: #fff !important;
+}
+
+.chartArea {
+  width: 100%;
+  height: 380px;
+}
+
+.technicalIndicators {
+  @include m.card-dark;
+  padding: 20px;
+
+  h3 {
+    margin-bottom: 14px;
+    color: v.$text-primary;
+  }
+}
+
+.indicatorsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.indicatorCard {
+  border: 1px solid v.$border-dark;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: v.$bg-card-highlight;
+}
+
+.indicatorInfo {
+  .label {
+    font-size: 13px;
+    color: v.$text-secondary;
+  }
+
+  .value {
+    margin-top: 4px;
+    font-size: 20px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+}
+
+.status {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.statusDanger {
+  background: rgba(255, 77, 106, 0.15);
+  color: v.$red-accent;
+}
+
+.statusSuccess {
+  background: rgba(0, 214, 143, 0.15);
+  color: v.$green-accent;
+}
+
+.statusNeutral {
+  background: rgba(249, 115, 22, 0.12);
+  color: #F97316;
+}
+
+@media (max-width: 1200px) {
+  .stockHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .priceSection {
+    text-align: left;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chartHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .chartControls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .indicatorsGrid {
+    grid-template-columns: 1fr;
+  }
+}
